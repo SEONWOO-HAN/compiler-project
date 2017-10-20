@@ -30,7 +30,9 @@ void yyerror(char *str);
 
 /*rules & actions */
 
-classlist: ADDIOP { printf("amuguna"); }
+
+
+
 
 %%
 
