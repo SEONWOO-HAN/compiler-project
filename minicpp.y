@@ -30,7 +30,50 @@ void yyerror(char *str);
 
 /*rules & actions */
 
+ForStmt: FOR OPRNTH Expr SEMICOLON Expr SEMICOLON Expr CPRNTH Stmt
+;
 
+IfStmt: IF OPRNTH Expr CPRNTH Stmt EL Stmt
+| IF OPRNTH Expr CPRNTH Stmt
+;
+
+Expr: OperExpr
+| RefExpr
+| INTNUM
+| FLOATNUM
+;
+
+OperExpr: UNUP Expr
+| Expr ADDIOP Expr
+| Expr MULTOP Expr
+| Expr RELAOP Expr
+| Expr EQLTOP Expr
+| OPRNTH Expr CPRNTH
+;
+
+RefExpr: RefVarExpr
+| RefCallExpr
+;
+
+RefVarExpr: RefExpr DOT IdentExpr
+| IdentExpr
+;
+
+RefCallExpr: RefExpr DOT CallExpr
+| CallExpr
+;
+IdentExpr: ID OBRCK Expr CBRCK
+| ID
+;
+
+CallExpr: ID OPRNTH CPRNTH
+| ID ID OPRNTH ArgList CPRNTH
+;
+
+ArgList: Expr
+| Expr ArgList
+| COMMA Expr ArgList
+;
 
 
 
