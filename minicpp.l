@@ -46,6 +46,8 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 
 ";"		{return SEMICOLON;}
 ":"		{return COLON;}
+"."		{return DOT;}
+","		{return COMMA;}
 
 {UNOP}		{return UNOP;}
 {ADDIOP}	{return ADDIOP;}
