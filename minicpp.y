@@ -13,13 +13,18 @@ void yyerror(char *str);
 %}
 
 %union{
+	struct ast *node;
+	char *id_val;
+	int int_val;
 	float float_val;
 }
 
 %token CLASS PRIVATE PUBLIC MAIN RETURN WHILE DO FOR IF EL
 %token OBRACE CBRACE OPRNTH CPRNTH OBRCK CBRCK SEMICOLON COLON
 %token INT FLOAT
-%token FLOATNUM INTNUM ID
+%token <float_val> FLOATNUM
+%token <int_val> INTNUM
+%token <id_val> ID
 
 %left RELAOP EQLTOP 
 %left ADDIOP
@@ -29,22 +34,32 @@ void yyerror(char *str);
 
 %token DOT COMMA
 
+%token PROGRAM
+
+%type <node> Program
+%type <node> ClassList Class Member VarDeclList MethodDeclList MethodDefList VarDecl FuncDecl FuncDef ClassMethodList
+%type <node> ClassMethodDef
+%type <node> MainFunc
+%type <node> ParamList Param Ident Type
+%type <node> CompoundStmt StmtList Stmt ExprStmt AssignStmt RetStmt WhileStmt DoStmt ForStmt IfStmt
+%type <node> Expr OperExpr RefExpr RefVarExpr RefCallExpr IdentExpr CallExpr ArgList
+
 %%
 
 /* rules & actions */
 
-Program: ClassList MainFunc
+Program: ClassList MainFunc	{ alloc_program(PROGRAM, $1, NULL, $2); }
 | ClassList ClassMethodList MainFunc
 | ClassMethodList MainFunc
 | MainFunc
 ;
 
-ClassList: Class ClassList
+ClassList: Class ClassList	{ change_class_prev($1, $2); }
 | ClassList
 |
 ;
 
-Class: CLASS ID OBRACE PRIVATE COLON Member CBRACE
+Class: CLASS ID OBRACE PRIVATE COLON Member CBRACE	{ alloc_class(CLASS, $2, $6, NULL, NULL); }
 | CLASS ID OBRACE PRIVATE COLON Member PUBLIC COLON Member CBRACE
 | CLASS ID OBRACE PUBLIC COLON Member CBRACE
 | CLASS ID OBRACE CBRACE

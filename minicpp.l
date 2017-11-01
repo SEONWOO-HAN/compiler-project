@@ -54,12 +54,12 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 {MULTOP}	{return MULTOP;}
 {RELAOP}	{return RELAOP;}
 {EQLTOP}	{return EQLTOP;}
-{ID}		{yylval = yytext; return ID;}
-"="		{return ASSIGNMENT;}
-[0-9]+		{yylval = atoi(yytext); return INTNUM;}
+{ID}		{yylval.id_val = yytext; return ID;}
+
+[0-9]+		{yylval.int_val = atoi(yytext); return INTNUM;}
 [0-9]+.[0-9]*	{
 			float temp;
-			sscanf(yytext, "%lf", %temp);
+			sscanf(yytext, "%lf", &temp);
 			yylval.float_val = temp;
 			return FLOATNUM;
 }

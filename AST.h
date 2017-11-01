@@ -332,4 +332,18 @@ struct EqltOp {
 	struct Expr *rhs;
 };
 
+struct ast {
+	int type;
+	struct ast *l;
+	struct ast *r;
+};
+
+//struct ast *alloc_ast(int type, struct ast *, struct ast *);
+struct ast *alloc_program(int type, struct ast *_class, struct ast *classMethodDef, struct ast *mainFunc);
+struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *pubMember, struct ast *prev);
+struct ast *change_class_prev(struct ast *_class, struct ast *prev);
+//struct ast *alloc_member(int type, struct ast)
+
+//void free_ast(struct ast *);
+
 #endif
