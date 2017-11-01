@@ -27,6 +27,8 @@ void yyerror(char *str);
 %right ASSIGNMENT
 %nonassoc UNOP
 
+%token DOT COMMA
+
 %%
 
 /* rules & actions */
@@ -50,7 +52,7 @@ Class: CLASS ID OBRACE PRIVATE COLON Member CBRACE
 Member: VarDeclList
 | VarDeclList MethodDeclList
 | VarDeclList MethodDeclList MethodDefList
-| VarDeclList MethodDeflList
+| VarDeclList MethodDefList
 | MethodDeclList MethodDefList
 | MethodDeclList
 | MethodDefList
@@ -148,7 +150,7 @@ Expr: OperExpr
 | FLOATNUM
 ;
 
-OperExpr: UNUP Expr
+OperExpr: UNOP Expr
 | Expr ADDIOP Expr
 | Expr MULTOP Expr
 | Expr RELAOP Expr

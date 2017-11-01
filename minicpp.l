@@ -54,7 +54,7 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 {MULTOP}	{return MULTOP;}
 {RELAOP}	{return RELAOP;}
 {EQLTOP}	{return EQLTOP;}
-{ID}		{return ID;}
+{ID}		{yylval = yytext; return ID;}
 "="		{return ASSIGNMENT;}
 [0-9]+		{yylval = atoi(yytext); return INTNUM;}
 [0-9]+.[0-9]*	{
