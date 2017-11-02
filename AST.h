@@ -65,6 +65,7 @@ typedef enum
 
 // Program := (ClassList)? (ClassMethod)? MainFunc
 struct Program {
+	int type;
 	struct Class *_class;
 	struct ClassMethodDef *classMethodDef;
 	struct MainFunc *mainFunc;
@@ -73,6 +74,7 @@ struct Program {
 // ClassList := (Class)+
 // Class := class id { (previate : Member)? (public : Member)? }
 struct Class {
+	int type;
 	char *id;
 	struct Member *priMember;
 	struct Member *pubMember;
@@ -81,6 +83,7 @@ struct Class {
 
 // Member := (VarDeclList)? (MethodDeclList)? (MethodDefList)?
 struct Member {
+	int type;
 	struct VarDecl *varDecl;
 	struct MethodDecl *methodDecl;
 	struct MethodDef *methodDef;
@@ -89,12 +92,13 @@ struct Member {
 // VarDeclList := (VarDecl)+
 // VarDecl := Type Ident (= (intnum|floatnum))? ;
 struct VarDecl {
-	struct Type *type;
+	int type1;
+	struct Type *type2;
 	struct Ident *ident;
 	bool isInt;	// true if type of assigner value is int, else false
 	union {
 		int intnum;
-		int floatnum;
+		float floatnum;
 	} assigner;
 	struct VarDecl *prev;
 };
@@ -102,17 +106,19 @@ struct VarDecl {
 // MethodDeclList := (MethodDecl)+
 // MethodDecl := Type id ( (ParamList)? ) ;
 struct MethodDecl {
+	int type1;
 	char *id;
-	struct Type *type;
+	struct Type *type2;
 	struct Param *param;
-	struct FuncDecl *prev;
+	struct MethodDecl *prev;
 };
 
 // MethodDefList := (MethodDef)+
 // MethodDef := Type id ( (ParamList)? ) CompoundStmt
 struct MethodDef {
+	int type1;
 	char *id;
-	struct Type *type;
+	struct Type *type2;
 	struct Param *param;
 	struct CompoundStmt *compoundStmt;
 	struct MethodDef *prev;
@@ -121,7 +127,8 @@ struct MethodDef {
 // ClassMethodList := (ClassMethodDef)+
 // ClassMethodDef := Type id :: id ( (ParamList)? ) CompoundStmt
 struct ClassMethodDef {
-	struct Type *type;
+	int type1;
+	struct Type *type2;
 	char *className;
 	char *methodName;
 	struct Param *param;
@@ -131,13 +138,15 @@ struct ClassMethodDef {
 
 // MainFunc := int main ( ) CompoundStmt
 struct MainFunc {
+	int type;
 	struct CompoundStmt *compoundStmt;
 };
 
 // ParamList := Param (, Param)*
 // Param := Type Ident
 struct Param {
-	struct Type *type;
+	int type1;
+	struct Type *type2;
 	struct Ident *ident;
 	struct Param *prev;
 };
@@ -145,6 +154,7 @@ struct Param {
 // Ident := id
 //        | id [ intnum ]
 struct Ident {
+	int type
 	char *id;
 	int len; // 0 if scalar
 };
@@ -153,12 +163,14 @@ struct Ident {
 //       | float
 //       | id
 struct Type {
+	int type
 	char *id; // NULL unless class type
 	Type_e e;
 };
 
 // CompoundStmt := { (VarDeclList)? (StmtList)? }
 struct CompoundStmt {
+	int type;
 	struct VarDecl *varDecl;
 	struct Stmt *stmt;
 };
@@ -174,6 +186,7 @@ struct CompoundStmt {
 //       | CompoundStmt
 //       | ;
 struct Stmt {
+	int type1;
 	Stmt_e e;
 	union {
 		struct ExprStmt *exprStmt;
@@ -184,7 +197,7 @@ struct Stmt {
 		struct ForStmt *forStmt;
 		struct IfStmt *ifStmt;
 		struct CompoundStmt *compoundStmt;
-	} type;
+	} type2;
 	struct Stmt *prev;
 };
 
@@ -342,7 +355,23 @@ struct ast {
 struct ast *alloc_program(int type, struct ast *_class, struct ast *classMethodDef, struct ast *mainFunc);
 struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *pubMember, struct ast *prev);
 struct ast *change_class_prev(struct ast *_class, struct ast *prev);
-//struct ast *alloc_member(int type, struct ast)
+struct ast *alloc_member(int type, struct ast *varDecl, struct ast *methodDecl, struct ast *methodDef);
+struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, union { int intnum; float floatnum; } assigner, struct ast *prev);
+struct ast *change_vardecl_prev(struct ast *varDecl, struct ast *prev);
+struct ast *alloc_methoddecl(int type1, char *id, struct ast *type2, struct ast *param, struct ast *prev);
+struct ast *change_methoddecl_prev(struct ast *methodDecl, struct ast *prev);
+struct ast *alloc_methoddef(int type1, char *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev);
+struct ast *change_methoddef_prev(struct ast *methodDef, struct ast *prev);
+struct ast *alloc_classmethoddef(int type1, struct ast *type2, char *className, char *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev);
+struct ast *change_classmethoddef_prev(struct ast *classMethodDef, struct ast *prev);
+struct ast *alloc_mainfunc(int type, struct ast *compoundStmt);
+struct ast *alloc_param(int type1, struct ast *type2, struct ast *ident, struct ast *prev);
+struct ast *change_param_prev(struct ast *param, struct ast *prev);
+struct ast *alloc_ident(int type, char *id, int len);
+struct ast *alloc_type(int type, char *id, Type_e e);
+struct ast *alloc_compoundstmt(int type, struct ast *varDecl, struct ast *stmt);
+struct ast *alloc_stmt(int type1, Stmt_e e, union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2, struct ast *prev);
+struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev);
 
 //void free_ast(struct ast *);
 

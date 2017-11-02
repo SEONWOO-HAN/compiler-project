@@ -506,6 +506,7 @@ char *yytext;
 #include "minicpp.tab.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 /*
 %%
 define NAME / return TOKEN
@@ -513,7 +514,7 @@ define NAME / return TOKEN
 */
 
 
-#line 517 "lex.yy.c"
+#line 518 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -731,9 +732,9 @@ YY_DECL
 		}
 
 	{
-#line 22 "minicpp.l"
+#line 23 "minicpp.l"
 
-#line 737 "lex.yy.c"
+#line 738 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -792,181 +793,181 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 23 "minicpp.l"
+#line 24 "minicpp.l"
 {}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 24 "minicpp.l"
+#line 25 "minicpp.l"
 {}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 26 "minicpp.l"
+#line 27 "minicpp.l"
 {return CLASS;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 27 "minicpp.l"
+#line 28 "minicpp.l"
 {return PRIVATE;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 28 "minicpp.l"
+#line 29 "minicpp.l"
 {return PUBLIC;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 29 "minicpp.l"
+#line 30 "minicpp.l"
 {return MAIN;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 30 "minicpp.l"
+#line 31 "minicpp.l"
 {return RETURN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 31 "minicpp.l"
+#line 32 "minicpp.l"
 {return WHILE;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 32 "minicpp.l"
+#line 33 "minicpp.l"
 {return DO;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 33 "minicpp.l"
+#line 34 "minicpp.l"
 {return FOR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 34 "minicpp.l"
+#line 35 "minicpp.l"
 {return IF;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 35 "minicpp.l"
+#line 36 "minicpp.l"
 {return EL;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 37 "minicpp.l"
+#line 38 "minicpp.l"
 {return INT;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 38 "minicpp.l"
+#line 39 "minicpp.l"
 {return FLOAT;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 40 "minicpp.l"
+#line 41 "minicpp.l"
 {return OBRACE;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 41 "minicpp.l"
+#line 42 "minicpp.l"
 {return CBRACE;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 42 "minicpp.l"
+#line 43 "minicpp.l"
 {return OPRNTH;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 43 "minicpp.l"
+#line 44 "minicpp.l"
 {return CPRNTH;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 44 "minicpp.l"
+#line 45 "minicpp.l"
 {return OBRCK;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 45 "minicpp.l"
+#line 46 "minicpp.l"
 {return CBRCK;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 47 "minicpp.l"
+#line 48 "minicpp.l"
 {return SEMICOLON;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 48 "minicpp.l"
+#line 49 "minicpp.l"
 {return COLON;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 49 "minicpp.l"
+#line 50 "minicpp.l"
 {return DOT;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 50 "minicpp.l"
+#line 51 "minicpp.l"
 {return COMMA;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 52 "minicpp.l"
+#line 53 "minicpp.l"
 {return UNOP;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 53 "minicpp.l"
+#line 54 "minicpp.l"
 {return ADDIOP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 54 "minicpp.l"
+#line 55 "minicpp.l"
 {return MULTOP;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 55 "minicpp.l"
+#line 56 "minicpp.l"
 {return RELAOP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 56 "minicpp.l"
+#line 57 "minicpp.l"
 {return EQLTOP;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 57 "minicpp.l"
-{yylval = yytext; return ID;}
+#line 58 "minicpp.l"
+{strcat(yylval.id_val, yytext); return ID;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 59 "minicpp.l"
-{yylval = atoi(yytext); return INTNUM;}
+#line 60 "minicpp.l"
+{yylval.int_val = atoi(yytext); return INTNUM;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 60 "minicpp.l"
+#line 61 "minicpp.l"
 {
 			float temp;
-			sscanf(yytext, "%lf", %temp);
+			sscanf(yytext, "%lf", &temp);
 			yylval.float_val = temp;
 			return FLOATNUM;
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 67 "minicpp.l"
+#line 68 "minicpp.l"
 {fprintf(stderr, "error: Mystery character '%c'\n", *yytext);}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 69 "minicpp.l"
+#line 70 "minicpp.l"
 ECHO;
 	YY_BREAK
-#line 970 "lex.yy.c"
+#line 971 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1967,7 +1968,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 69 "minicpp.l"
+#line 70 "minicpp.l"
 
 
 
