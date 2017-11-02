@@ -251,3 +251,170 @@ struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev)
 	(struct Stmt *)stmt->prev = (struct Stmt *)prev;
 	return (struct ast *)stmt;
 }
+
+////////////////////////////////////////////////////////////////////////////
+
+
+struct ast *alloc_ifstmt(int type, struct ast* cond, struct ast* ifbody, struct ast* elsebody)
+{
+	struct IfStmt *node = malloc(sizeof(struct IfStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->cond = (struct Expr*)cond;
+	node->ifbody = (struct Stmt*)ifbody;
+	node->elsebody = (struct Stmt*)elsebody;
+	return (struct ast*)node;
+}
+
+//eOper, eRef, eIntnum, eFloatnum
+struct ast *alloc_expr(int type1, Expr_e e, int intnum, float floatnum, struct ast* expr)
+{
+	struct Expr *node = malloc(sizeof(struct Expr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type1 = type1;
+	switch(e)
+	{
+	case eOper:
+		node->type.operExpr = (struct OperExpr*)expr;
+		break;
+	case eRef:
+		node->type.refExpr = (struct RefExpr*)expr;
+		break;
+	case eIntnum:
+		node->type.intnum = intnum;
+		break;
+	case eFloatnum:
+		node->type.floatnum = floatnum;
+		break;
+	}
+	return (struct ast*)node;
+}
+
+
+//eUn, eAddi, eMult, eRela, eEqlt, eBracket
+//미완??????????
+struct ast *alloc_operexpr(int type1, Oper_e e, 
+			struct ast* operexpr, struct ast* expr1, struct ast* expr2)
+{
+	struct OperExpr *node = malloc(sizeof(struct OperExpr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type1 = type1;
+	switch(e)
+	{
+	case eUn:
+		node->type.un = (struct *UnOp)operexpr;
+		break;
+	case Addi:
+		node->type.addi = (struct *AddiOp)operexpr;
+		break;
+	case eMult:
+		node->type.mult = (struct *MultOp)operexpr;
+		break;
+	case eRela:
+		node->type.rela = (struct *RelaOp)operexpr;
+		break;
+	case eEqlt:
+		node->type.eqlt = (struct *EqltOp)operexpr;
+		break;
+	case eBracket:
+		node->type.bracket = (struct *Expr)expr1;
+		break;	
+	}
+	return (struct ast*)node;
+}
+
+//eVar, eCall
+struct ast *alloc_refexpr(int type1, Ref_e e, struct ast* ref_Expr)
+{
+	struct RefExpr *node = malloc(sizeof(struct RefExpr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type1 = type1;
+	
+	switch(e)
+	{
+	case eVar: 
+		node->type.refVarExpr=(struct refVarExpr*)ref_Expr;
+		break;
+	case eCall:
+		node->type.refCallExpr=(struct refCallExpr*)ref_Expr;
+		break;
+	}
+	return (struct ast*)node;
+}
+
+struct ast *alloc_refvarexpr(int type, struct ast* refExpr, struct ast* identExpr)
+{
+	struct RefVarExpr *node = malloc(sizeof(struct RefVarExpr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->refExpr=(struct RefExpr*)refExpr;
+	node->identExpr=(struct IdentExpr*)identExpr;
+	return (struct ast*)node;
+}
+
+struct ast *alloc_refcallexpr(int type, struct ast* refExpr, struct ast* callExpr)
+{
+	struct RefCallExpr *node = malloc(sizeof(struct RefCallExpr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->refExpr=(struct RefExpr*)refExpr;
+	node->callExpr=(struct CallExpr*)callExpr;
+	return (struct ast*)node;
+}
+
+struct ast *alloc_identexpr(int type, char* id, struct ast* expr)
+{
+	struct IdentExpr* node = malloc(sizeof(struct IdentExpr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	strcat(node->id,id);
+	node->expr = (struct Expr*)expr;
+	return (struct ast*)node;
+}
+
+struct ast *alloc_callexpr(int type, char* id, struct ast* arg)
+{
+	struct CallExpr* node = malloc(sizeof(struct CallExpr));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	strcat(node->id,id);
+	node->arg = (struct Arg*)arg;
+	return (struct ast*)node;
+}
+
+struct ast *alloc_arg(int type, struct ast* expr, struct ast* prev)
+{
+	struct Arg* node = malloc(sizeof(struct Arg));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->expr = (struct Expr*)expr;
+	node->prev = (struct Arg*)prev;
+	return (struct ast*)node;
+}
