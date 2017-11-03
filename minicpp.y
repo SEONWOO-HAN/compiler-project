@@ -34,7 +34,7 @@ void yyerror(char *str);
 
 %token DOT COMMA
 
-%token PROGRAM MEMBER VARIABLE FUNCDECL FUNCDEF CLASSMETHODDEF PARAM TYPE COMPOUNDSTMT STMT
+%token PROGRAM MEMBER VARIABLE FUNCDECL FUNCDEF CLASSMETHODDEF PARAM TYPE COMPOUNDSTMT STMT EXPRSTMT EXPR OPEREXPR REFEXPR REFVAREXPR REFCALLEXPR IDENTEXPR CALLEXPR ARGLIST
 
 %type <node> Program
 %type <node> ClassList Class Member VarDeclList MethodDeclList MethodDefList VarDecl FuncDecl FuncDef ClassMethodList
@@ -153,65 +153,77 @@ type2.compoundStmt = $1;
 $$ = alloc_stmt(STMT, eCompound, type2, NULL); }
 ;
 
-ExprStmt: Expr COLON
+ExprStmt: Expr COLON	{ $$ = alloc_exprstmt(EXPRSTMT, $1); }
 ;
 
-AssignStmt: RefVarExpr ASSIGNMENT Expr COLON
+AssignStmt: RefVarExpr ASSIGNMENT Expr COLON	{ $$ = alloc_assignstmt(ASSIGNMENT, $1, $3); }
 ;
 
-RetStmt: RETURN Expr COLON
-| RETURN COLON
+RetStmt: RETURN Expr COLON	{ $$ = alloc_retstmt(RETURN, $2); }
+| RETURN COLON	{ $$ = alloc_retstmt(RETSTMT, NULL); }
 ;
 
-WhileStmt: WHILE OPRNTH Expr CPRNTH Stmt
+WhileStmt: WHILE OPRNTH Expr CPRNTH Stmt	{ $$ = alloc_whilestmt(WHILE, $3, $5); }
 ;
 
-DoStmt: DO Stmt WHILE OPRNTH Expr CPRNTH COLON
+DoStmt: DO Stmt WHILE OPRNTH Expr CPRNTH COLON	{ $$ = alloc_dostmt(DO, $5, $2); }
 ;
 
-ForStmt: FOR OPRNTH Expr SEMICOLON Expr SEMICOLON Expr CPRNTH Stmt
+ForStmt: FOR OPRNTH Expr SEMICOLON Expr SEMICOLON Expr CPRNTH Stmt	{ $$ = alloc_forstmt(FOR, $3, $5, $7, $9); }
 ;
 
-IfStmt: IF OPRNTH Expr CPRNTH Stmt EL Stmt
-| IF OPRNTH Expr CPRNTH Stmt
+IfStmt: IF OPRNTH Expr CPRNTH Stmt EL Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, $7); }
+| IF OPRNTH Expr CPRNTH Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, NULL); }
 ;
 
-Expr: OperExpr
-| RefExpr
-| INTNUM
-| FLOATNUM
+Expr: OperExpr	{ Expr_e = eOper;
+$$ = alloc_expr(EXPR, e, 0, 0, $1); }
+| RefExpr	{ Expr_e = eOper;
+$$ = alloc_expr(EXPR, e, 0, 0, $1); }
+| INTNUM	{ Expr_e = eInt;
+$$ = alloc_expr(EXPR, e, $1, 0, NULL); }
+| FLOATNUM	{ Expr_e = eFloat;
+$$ = alloc_expr(EXPR, e, $1, 0, NULL); }
 ;
 
-OperExpr: UNOP Expr
-| Expr ADDIOP Expr
-| Expr MULTOP Expr
-| Expr RELAOP Expr
-| Expr EQLTOP Expr
-| OPRNTH Expr CPRNTH
+OperExpr: UNOP Expr	{ Oper_e = eUn;
+$$ = alloc_operexpr(OPEREXPR, e, $2, NULL, NULL); }
+| Expr ADDIOP Expr	{ Oper_e = eAddi;
+$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
+| Expr MULTOP Expr	{ Oper_e = eMult;
+$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
+| Expr RELAOP Expr	{ Oper_e = eRela;
+$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
+| Expr EQLTOP Expr	{ Oper_e = eEalt;
+$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
+| OPRNTH Expr CPRNTH	{ Oper_e = eBracket;
+$$ = alloc_operexpr(OPEREXPR, e, NULL, $2, NULL); }
 ;
 
-RefExpr: RefVarExpr
-| RefCallExpr
+RefExpr: RefVarExpr	{ Ref_e e = eVar;
+$$ = alloc_refexpr(REFEXPR, e, $1); }
+| RefCallExpr	{ Ref_e e = eCall;
+$$ = alloc_refexpr(REFEXPR, e, $1); }
 ;
 
-RefVarExpr: RefExpr DOT IdentExpr
-| IdentExpr
+RefVarExpr: RefExpr DOT IdentExpr	{ $$ = alloc_refvarexpr(REFVAR, $1, $3); }
+| IdentExpr	{ $$ = alloc_refvarexpr(REFCALLEXPR, NULL, $3); }
 ;
 
-RefCallExpr: RefExpr DOT CallExpr
-| CallExpr
+RefCallExpr: RefExpr DOT CallExpr	{ $$ = alloc_refcallexpr(REFCALL, $1, $3); }
+| CallExpr	{ $$ = alloc_refcallexpr(REFCALLEXPR, NULL, $3); }
 ;
-IdentExpr: ID OBRCK Expr CBRCK
-| ID
-;
-
-CallExpr: ID OPRNTH CPRNTH
-| ID ID OPRNTH ArgList CPRNTH
+IdentExpr: ID OBRCK Expr CBRCK	{ $$ = alloc_identexpr(IDENTEXPR, $1, $3); }
+| ID	{ $$ = alloc_identexpr(IDENTEXPR, $1, NULL); }
 ;
 
-ArgList: Expr
-| Expr ArgList
-| COMMA Expr ArgList
+CallExpr: ID OPRNTH CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, NULL); }
+| ID OPRNTH ArgList CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, $3); }
+;
+
+ArgList: Expr	{ $$ = alloc_arg(ARGLIST, $1, NULL); }
+| Expr ArgList	{ $$ = alloc_arg(ARGLIST, $1, $2); }
+| COMMA Expr ArgList	{ $$ = alloc_arg(ARGLIST, $2, $3); }
 ;
 
 %%
