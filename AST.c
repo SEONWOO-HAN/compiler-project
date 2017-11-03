@@ -876,16 +876,115 @@ void print_ast(struct ast *node)
 					descendant_count++;
 				}
 			case DO:
+				if(((struct DoStmt*)current)->cond!= NULL)
+					put(((struct DoStmt *)current)->cond);
+				if(((struct DoStmt*)current)->body!= NULL)
+					put(((struct DoStmt *)current)->body);
+				break;
 			case FOR:
+				if(((struct ForStmt*)current)->init!= NULL)
+					put(((struct ForStmt *)current)->init);
+				if(((struct ForStmt*)current)->cond!= NULL)
+					put(((struct ForStmt *)current)->cond);
+				if(((struct ForStmt*)current)->incr!= NULL)
+					put(((struct ForStmt *)current)->incr);
+				if(((struct ForStmt*)current)->body!= NULL)
+					put(((struct ForStmt *)current)->body);
+				break;
 			case IF:
+				if(((struct IfStmt*)current)->cond!= NULL)
+					put(((struct IfStmt *)current)->cond);
+				if(((struct IfStmt*)current)->ifBody!= NULL)
+					put(((struct IfStmt *)current)->ifBody);
+				if(((struct IfStmt*)current)->elseBody!= NULL)
+					put(((struct IfStmt *)current)->elseBody);
+				break;
 			case EXPR:
+			//eOper, eRef, eIntnum, eFloatnum
+				if((struct Expr*)current-> e == eOper)
+				{
+					if(((struct Expr*)current)->type.operExpr!= NULL)
+					put(((struct Expr *)current)->operExpr);
+				}
+				else if((struct Expr*)current-> e == eRef)
+				{
+					if(((struct Expr*)current)->type.refExpr!= NULL)
+					put(((struct Expr *)current)->refExpr);
+				}
+				//intnum float	
+				break;
+			
 			case OPEREXPR:
+			//eUn, eAddi, eMult, eRela, eEqlt, eBracket
+				if((struct OperExpr*)current-> e == eUn)
+				{
+					if(((struct OperExpr*)current)->type.un!= NULL)
+						put(((struct OperExpr*)current)->type.un);
+				}
+				else if((struct OperExpr*)current-> e ==eAddi)
+				{
+					if(((struct OperExpr*)current)->type.addi!= NULL)
+						put(((struct OperExpr*)current)->type.addi);
+				}
+				else if((struct OperExpr*)current-> e ==eMult)
+				{
+					if(((struct OperExpr*)current)->type.mult!= NULL)
+						put(((struct OperExpr*)current)->type.mult);
+				}
+				else if((struct OperExpr*)current-> e ==eRela)
+				{
+					if(((struct OperExpr*)current)->type.rela!= NULL)
+						put(((struct OperExpr*)current)->type.rela);
+				}
+				else if((struct OperExpr*)current-> e ==eEqlt)
+				{
+					if(((struct OperExpr*)current)->type.eqlt!= NULL)
+						put(((struct OperExpr*)current)->eqlt);			
+				}
+				else
+				{
+					if(((struct OperExpr*)current)->type.bracket!= NULL)
+						put(((struct OperExpr*)current)->bracket);			
+				}
+				break;
 			case REFEXPR:
+				if((struct RefExpr*)current-> e == eVar)
+				{
+					if(((struct RefExpr*)current)->refExpr!= NULL)
+						put(((struct RefExpr*)current)->refExpr);
+				}
+				else
+				{
+					if(((struct RefExpr*)current)->identExpr!= NULL)
+						put(((struct RefExpr*)current)->identExpr);
+				}
+				break;
 			case REFVAREXPR:
+				if(((struct RefVarExpr*)current)->refExpr!= NULL)
+					put(((struct RefVarExpr *)current)->refExpr);
+				if(((struct RefVarExpr*)current)->identExpr!= NULL)
+					put(((struct RefVarExpr *)current)->identExpr);
+				break;
 			case REFCALLEXPR:
+				if(((struct RefCallExpr*)current)->refExpr!= NULL)
+					put(((struct RefCallExpr *)current)->refExpr);
+				if(((struct RefCallExpr*)current)->callExpr!= NULL)
+					put(((struct RefCallExpr *)current)->callExpr);
+				break;
 			case IDENTEXPR:
+				if(((struct IdentExpr*)current)->expr!= NULL)
+					put(((struct IdentExpr*)current)->expr);
+				break;
 			case CALLEXPR:
+				if(((struct CallExpr*)current)->arg!= NULL)
+					put(((struct CallExpr*)current)->arg);
+				break
 			case ARGLIST:
+				if(((struct Arg *)current)->expr!= NULL)
+					put(((struct Arg *)current)->expr);
+				if(((struct Arg *)current)->prev!= NULL)
+					put(((struct Arg *)current)->prev);
+				break;
 		}
 	}
 
