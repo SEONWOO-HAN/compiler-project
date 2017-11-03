@@ -203,40 +203,47 @@ struct Stmt {
 
 // ExprStmt := Expr ;
 struct ExprStmt {
+	int type;
 	struct Expr *expr;
 };
 
 // AssignStmt := RefVarExpr = Expr ;
 struct AssignStmt {
+	int type;
 	struct RefVarExpr *refVarExpr;
 	struct Expr *expr;
 };
 
 // RetStmt := return (Expr)? ;
 struct RetStmt {
+	int type;
 	struct Expr *expr;
 };
 
 // WhileStmt := while ( Expr ) Stmt
 struct WhileStmt {
+	int type;
 	struct Expr *cond;
 	struct Stmt *body;
 };
 
 // DoStmt := do Stmt while ( Expr ) ;
 struct DoStmt {
+	int type;
 	struct Expr *cond;
 	struct Stmt *body;
 };
 
 // ForStmt := for ( Expr ; Expr ; Expr ) Stmt
 struct ForStmt {
+	int type;
 	struct Expr *init, *cond, *incr;
 	struct Stmt *body;
 };
 
 // IfStmt := if ( Expr ) Stmt (else Stmt)?
 struct IfStmt {
+	int type;
 	struct Expr *cond;
 	struct Stmt *ifBody;
 	struct Stmt *elseBody;
@@ -248,6 +255,7 @@ struct IfStmt {
 //       | floatnum
 struct Expr {
 	Expr_e e;
+	int type1;
 	union {
 		struct OperExpr *operExpr;
 		struct RefExpr *refExpr;
@@ -264,6 +272,7 @@ struct Expr {
 //           | ( Expr )
 struct OperExpr {
 	Oper_e e;
+	int type1;
 	union {
 		struct UnOp *un;
 		struct AddiOp *addi;
@@ -278,6 +287,7 @@ struct OperExpr {
 //          | RefCallExpr
 struct RefExpr {
 	Ref_e e;
+	int type1;
 	union {
 		struct RefVarExpr *refVarExpr;
 		struct RefCallExpr *refCallExpr;
@@ -286,12 +296,14 @@ struct RefExpr {
 
 // RefVarExpr := (RefExpr .)? IdentExpr
 struct RefVarExpr {
+	int type;
 	struct RefExpr *refExpr;
 	struct IdentExpr *identExpr;
 };
 
 // RefCallExpr := (RefExpr .)? CallExpr
 struct RefCallExpr {
+	int type;
 	struct RefExpr *refExpr;
 	struct CallExpr *callExpr;
 };
@@ -299,18 +311,21 @@ struct RefCallExpr {
 // IdentExpr := id [ Expr ]
 //            | id
 struct IdentExpr {
+	int type;
 	char *id;
 	struct Expr *expr; // NULL if scalar
 };
 
 // CallExpr := id ( (ArgList)? )
 struct CallExpr {
+	int type;
 	char *id;
 	struct Arg *arg;
 };
 
 // ArgList := Expr (, Expr)*
 struct Arg {
+	int type;
 	struct Expr *expr;
 	struct Arg *prev;
 };
@@ -372,6 +387,22 @@ struct ast *alloc_type(int type, char *id, Type_e e);
 struct ast *alloc_compoundstmt(int type, struct ast *varDecl, struct ast *stmt);
 struct ast *alloc_stmt(int type1, Stmt_e e, union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2, struct ast *prev);
 struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev);
+
+struct ast *alloc_exprstmt(int type, struct ast* expr);
+struct ast *alloc_assignstmt(int type, struct ast* refVarExpr, struct ast* expr);
+struct ast *alloc_retstmt(int type, struct ast* expr);
+struct ast *alloc_whilestmt(int type, struct ast* cond, struct ast* body);
+struct ast *alloc_dostmt(int type, struct ast* cond, struct ast* body);
+struct ast *alloc_forstmt(int type, struct ast* init, struct ast* cond, struct ast* incr,	struct ast* body);
+struct ast *alloc_ifstmt(int type, struct ast* cond, struct ast* ifbody, struct ast* elsebody);
+struct ast *alloc_expr(int type1, Expr_e e, int intnum, float floatnum, struct ast* expr);
+struct ast *alloc_operexpr(int type1, Oper_e e,	struct ast* operexpr, struct ast* expr1, struct ast* expr2);
+struct ast *alloc_refexpr(int type1, Ref_e e, struct ast* ref_Expr);
+struct ast *alloc_refvarexpr(int type, struct ast* refExpr, struct ast* identExpr);
+struct ast *alloc_refcallexpr(int type, struct ast* refExpr, struct ast* callExpr);
+struct ast *alloc_identexpr(int type, char* id, struct ast* expr);
+struct ast *alloc_callexpr(int type, char* id, struct ast* arg);
+struct ast *alloc_arg(int type, struct ast* expr, struct ast* prev);
 
 //void free_ast(struct ast *);
 
