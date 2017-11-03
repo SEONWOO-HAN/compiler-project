@@ -569,36 +569,312 @@ struct ast *get()
 
 void print_ast(struct ast *node)
 {
+	FILE* fp = fopen("./ast.out", "w");
+	if(fp == NULL)
+	{
+		yyerror("file unopen");
+		exit(0);
+	}
+
+	int parent_count = 1;
+	int descendant_count = 0;
+
 	put(node);
 	while(!empty())
-	{		
-		// file out
+	{
 		struct ast *current = get();
+
+		if(parent_count == 0)
+		{
+			parent_count = descendant_count;
+			descendant_count = 0;
+			fprintf(fp, "\n");
+		}
+		parent_count--;
+
 		switch(current->type)
 		{
 			case PROGRAM:
+				fprintf(fp, "Program ");
 				if(((struct Program *)current)->_class != NULL)
-					put(((struct Program *)current)->_class);
+				{
+					put((struct ast *)((struct Program *)current)->_class);
+					descendant_count++;
+				}
 				if(((struct Program *)current)->classMethodDef != NULL)
-					put(((struct Program *)current)->classMethodDef);
+				{
+					put((struct ast *)((struct Program *)current)->classMethodDef);
+					descendant_count++;
+				}
 				if(((struct Program *)current)->mainFunc != NULL)
-					put(((struct Program *)current)->mainFunc);
+				{
+					put((struct ast *)((struct Program *)current)->mainFunc);
+					descendant_count++;
+				}
+				break;
 			case CLASS:
+				char *id = ((struct Class *)current)->id;
+				fprintf(fp, "Class(%s) ", id);
+				if(((struct Class *)current)->priMember != NULL)
+				{
+					put((struct ast *)((struct Class *)current)->priMember);
+					descendant_count++;
+				}
+				if(((struct Class *)current)->pubMember != NULL)
+				{
+					put((struct ast *)((struct Class *)current)->pubMember);
+					descendant_count++;
+				}
+				if(((struct Class *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct Class *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case MEMBER:
+				fprintf(fp, "Member ");
+				if(((struct Member *)current)->varDecl != NULL)
+				{
+					put((struct ast *)((struct Member *)current)->varDecl);
+					descendant_count++;
+				}
+				if(((struct Member *)current)->methodDecl != NULL)
+				{
+					put((struct ast *)((struct Member *)current)->methodDecl);
+					descendant_count++;
+				}
+				if(((struct Member *)current)->methodDef != NULL)
+				{
+					put((struct ast *)((struct Member *)current)->methodDef);
+					descendant_count++;
+				}
+				break;
 			case VARIABLE:
+				fprintf(fp, "VarDecl ");
+				if(((struct VarDecl *)current)->type2 != NULL)
+				{
+					put((struct ast *)((struct VarDecl *)current)->type2);
+					descendant_count++;
+				}
+				if(((struct VarDecl *)current)->ident != NULL)
+				{
+					put((struct ast *)((struct VarDecl *)current)->ident);
+					descendant_count++;
+				}
+				if(((struct VarDecl *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct VarDecl *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case FUNCDECL:
+				char *id = ((struct MethodDecl *)current)->id;
+				fprintf(fp, "MethodDecl(%s) ", id);
+				if(((struct MethodDecl *)current)->type2 != NULL)
+				{
+					put((struct ast *)((struct MethodDecl *)current)->type2);
+					descendant_count++;
+				}
+				if(((struct MethodDecl *)current)->param != NULL)
+				{
+					put((struct ast *)((struct MethodDecl *)current)->param);
+					descendant_count++;
+				}
+				if(((struct MethodDecl *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct MethodDecl *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case FUNCDEF:
+				char *id = ((struct MethodDef *)current)->id;
+				fprintf(fp, "MethodDef(%s) ", id);
+				if(((struct MethodDef *)current)->type2 != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->type2);
+					descendant_count++;
+				}
+				if(((struct MethodDef *)current)->param != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->param);
+					descendant_count++;
+				}
+				if(((struct MethodDef *)current)->compoundStmt != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->compoundStmt);
+					descendant_count++;
+				}
+				if(((struct MethodDef *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case CLASSMETHODDEF:
+				char *className = ((struct ClassMethodDef *)current)->className;
+				char *methodName = ((struct ClassMethodDef *)current)->methodName;
+				fprintf(fp, "ClassMethodDef(%s::%s) ", className, methodName);
+				if(((struct MethodDef *)current)->type2 != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->type2);
+					descendant_count++;
+				}
+				if(((struct MethodDef *)current)->param != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->param);
+					descendant_count++;
+				}
+				if(((struct MethodDef *)current)->compoundStmt != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->compoundStmt);
+					descendant_count++;
+				}
+				if(((struct MethodDef *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct MethodDef *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case MAIN:
+				fprintf(fp, "MainFunc ");
+				if(((struct MainFunc *)current)->compoundStmt != NULL)
+				{
+					put((struct ast *)((struct MainFunc *)current)->compoundStmt);
+					descendant_count++;
+				}
+				break;
 			case PARAM:
+				fprintf(fp, "Param ");
+				if(((struct Param *)current)->type2 != NULL)
+				{
+					put((struct ast *)((struct Param *)current)->type2);
+					descendant_count++;
+				}
+				if(((struct Param *)current)->ident != NULL)
+				{
+					put((struct ast *)((struct Param *)current)->ident);
+					descendant_count++;
+				}
+				if(((struct Param *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct Param *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case ID:
+				char *id = ((struct Ident *)current)->id;
+				fprintf(fp, "Ident(%s) ", id);
+				break;
 			case TYPE:
+				if(((struct Type *)current)->e == eInt)
+					fprintf(fp, "Type(int) ");
+				else if(((struct Type *)current)->e == eFloat)
+					fprintf(fp, "Type(float) ");
+				else
+				{
+					char *id = ((struct Type *)current)->id;
+					fprintf(fp, "Type(%s) ", id);
+				}
+				break;
 			case COMPOUNDSTMT:
+				fprintf(fp, "CompoundStmt ");
+				if(((struct CompoundStmt *)current)->varDecl != NULL)
+				{
+					put((struct ast *)((struct CompoundStmt *)current)->varDecl);
+					descendant_count++;
+				}
+				if(((struct CompoundStmt *)current)->stmt != NULL)
+				{
+					put((struct ast *)((struct CompoundStmt *)current)->stmt);
+					descendant_count++;
+				}
+				break;
 			case STMT:
+				fprintf(fp, "Stmt ");
+				if(e == eExpr)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.exprStmt);
+					descendant_count++;
+				}
+				else if(e == eAssign)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.assignStmt);
+					descendant_count++;
+				}
+				else if(e == eRet)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.retStmt);
+					descendant_count++;
+				}
+				else if(e == eWhile)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.whileStmt);
+					descendant_count++;
+				}
+				else if(e == eDo)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.doStmt);
+					descendant_count++;
+				}
+				else if(e == eFor)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.forStmt);
+					descendant_count++;
+				}
+				else if(e == eIf)
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.ifStmt);
+					descendant_count++;
+				}
+				else
+				{
+					put((struct ast *)((struct Stmt *)current)->type2.compoundStmt);
+					descendant_count++;
+				}
+				if(((struct Stmt *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct Stmt *)current)->prev);
+					descendant_count++;
+				}
+				break;
 			case EXPRSTMT:
+				fprintf(fp, "ExprStmt ");
+				if(((struct ExprStmt *)current)->expr != NULL)
+				{
+					put((struct ast *)((struct ExprStmt *)current)->expr);
+					descendant_count++;
+				}
 			case ASSIGNMENT:
+				fprintf(fp, "ArrignStmt ");
+				if(((struct AssignStmt *)current)->refVarExpr != NULL)
+				{
+					put((struct ast *)((struct AssignStmt *)current)->refVarExpr);
+					descendant_count++;
+				}
+				if(((struct AssignStmt *)current)->expr != NULL)
+				{
+					put((struct ast *)((struct AssignStmt *)current)->expr);
+					descendant_count++;
+				}
 			case RETURN:
+				fprintf(fp, "RetStmt ");
+				if(((struct RetStmt *)current)->expr != NULL)
+				{
+					put((struct ast *)((struct RetStmt *)current)->expr);
+					descendant_count++;
+				}
 			case WHILE:
+				fprintf(fp, "WhileStmt ");
+				if(((struct WhileStmt *)current)->cond != NULL)
+				{
+					put((struct ast *)((struct WhileStmt *)current)->cond);
+					descendant_count++;
+				}
+				if(((struct WhileStmt *)current)->body != NULL)
+				{
+					put((struct ast *)((struct WhileStmt *)current)->body);
+					descendant_count++;
+				}
 			case DO:
 			case FOR:
 			case IF:
@@ -613,4 +889,5 @@ void print_ast(struct ast *node)
 		}
 	}
 
+	fclose(fp);
 }
