@@ -10,6 +10,8 @@ int yylex();
 
 void yyerror(char *str);
 
+FILE *yyin;
+
 %}
 
 %union{
@@ -129,7 +131,7 @@ Stmt: ExprStmt	{ $$ = alloc_stmt(STMT, eExpr, $1, NULL); }
 | AssignStmt { $$ = alloc_stmt(STMT, eAssign, $1, NULL); }
 | RetStmt { $$ = alloc_stmt(STMT, eRet, $1, NULL); }
 | WhileStmt { $$ = alloc_stmt(STMT, eWhile, $1, NULL); }
-| DoStmt { $$ = alloc_stmt(STMT, eDoo, $1, NULL); }
+| DoStmt { $$ = alloc_stmt(STMT, eDo, $1, NULL); }
 | ForStmt { $$ = alloc_stmt(STMT, eFor, $1, NULL); }
 | IfStmt { $$ = alloc_stmt(STMT, eIf, $1, NULL); }
 | CompoundStmt { $$ = alloc_stmt(STMT, eCompound, $1, NULL); }
@@ -142,7 +144,7 @@ AssignStmt: RefVarExpr ASSIGNMENT Expr COLON	{ $$ = alloc_assignstmt(ASSIGNMENT,
 ;
 
 RetStmt: RETURN Expr COLON	{ $$ = alloc_retstmt(RETURN, $2); }
-| RETURN COLON	{ $$ = alloc_retstmt(RETSTMT, NULL); }
+| RETURN COLON	{ $$ = alloc_retstmt(RETURN, NULL); }
 ;
 
 WhileStmt: WHILE OPRNTH Expr CPRNTH Stmt	{ $$ = alloc_whilestmt(WHILE, $3, $5); }
@@ -158,27 +160,27 @@ IfStmt: IF OPRNTH Expr CPRNTH Stmt EL Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, $7); 
 | IF OPRNTH Expr CPRNTH Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, NULL); }
 ;
 
-Expr: OperExpr	{ Expr_e = eOper;
+Expr: OperExpr	{ Expr_e e = eOper;
 $$ = alloc_expr(EXPR, e, 0, 0, $1); }
-| RefExpr	{ Expr_e = eOper;
+| RefExpr	{ Expr_e e = eOper;
 $$ = alloc_expr(EXPR, e, 0, 0, $1); }
-| INTNUM	{ Expr_e = eInt;
+| INTNUM	{ Expr_e e = eInt;
 $$ = alloc_expr(EXPR, e, $1, 0, NULL); }
-| FLOATNUM	{ Expr_e = eFloat;
+| FLOATNUM	{ Expr_e e = eFloat;
 $$ = alloc_expr(EXPR, e, $1, 0, NULL); }
 ;
 
-OperExpr: UNOP Expr	{ Oper_e = eUn;
+OperExpr: UNOP Expr	{ Oper_e e = eUn;
 $$ = alloc_operexpr(OPEREXPR, e, $2, NULL, NULL); }
-| Expr ADDIOP Expr	{ Oper_e = eAddi;
+| Expr ADDIOP Expr	{ Oper_e e = eAddi;
 $$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| Expr MULTOP Expr	{ Oper_e = eMult;
+| Expr MULTOP Expr	{ Oper_e e = eMult;
 $$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| Expr RELAOP Expr	{ Oper_e = eRela;
+| Expr RELAOP Expr	{ Oper_e e = eRela;
 $$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| Expr EQLTOP Expr	{ Oper_e = eEalt;
+| Expr EQLTOP Expr	{ Oper_e e = eEqlt;
 $$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| OPRNTH Expr CPRNTH	{ Oper_e = eBracket;
+| OPRNTH Expr CPRNTH	{ Oper_e e = eBracket;
 $$ = alloc_operexpr(OPEREXPR, e, NULL, $2, NULL); }
 ;
 
@@ -212,12 +214,14 @@ ArgList: Expr	{ $$ = alloc_arg(ARGLIST, $1, NULL); }
 
 /* C code */
 
-int main() {
+int main(int argc, char* argv[]) {
+	//yyin = fopen(argv[1], "r");
 	yyparse();
-
+	//close(yyin);
+	return 0;
 }
 
 void yyerror(char* s) {
-	fprintf(stderr, "error: %s\n", s);
+	printf("error: %s\n", s);
 }
 

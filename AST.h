@@ -320,27 +320,7 @@ struct IdentExpr {
 struct CallExpr {
 	int type;
 	char *id;
-	struct Ar
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-g *arg;
+	struct Arg *arg;
 };
 
 // ArgList := Expr (, Expr)*

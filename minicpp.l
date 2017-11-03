@@ -23,6 +23,7 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 %%
 [\t]		{}
 \n		{}
+" "	{}
 
 "class"		{return CLASS;}
 "private"	{return PRIVATE;}
@@ -65,12 +66,13 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 			return FLOATNUM;
 }
 
-.		{fprintf(stderr, "error: Mystery character '%c'\n", *yytext);}
+.		{fprintf(stderr, "error: mystery character '%c'\n", *yytext);}
 
 %%
 
 /* C code */
-
+/*
 int main() {
 	yylex();
 }
+*/

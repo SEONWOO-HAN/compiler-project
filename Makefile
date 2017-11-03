@@ -2,7 +2,7 @@ TARGET = minicpp
 OBJECTS = lex.yy.c minicpp.tab.c minicpp.tab.h
 
 $(TARGET) : $(OBJECTS)
-	gcc -o $@ $^ -lfl
+	gcc -o $@ $^ AST.c -lfl
 
 minicpp.tap.c minicpp.tap.h : minicpp.y
 	bison -d $^

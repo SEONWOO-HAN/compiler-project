@@ -103,7 +103,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "minicpp.y" /* yacc.c:1909  */
+#line 17 "minicpp.y" /* yacc.c:1909  */
 
 	struct ast *node;
 	char *id_val;

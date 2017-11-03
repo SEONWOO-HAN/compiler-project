@@ -1,6 +1,9 @@
 #include "AST.h"
-#include "minicpp.y"
+//#include "minicpp.y"
 #include <string.h>
+//#include <stdlib.h>
+
+void yyerror(char *);
 
 struct ast *alloc_program(int type, struct ast *_class, struct ast *classMethodDef, struct ast *mainFunc)
 {
@@ -12,7 +15,7 @@ struct ast *alloc_program(int type, struct ast *_class, struct ast *classMethodD
 	node->type = type;
 	node->_class = (struct Class *)_class;
 	node->classMethodDef = (struct ClassMethodDef *)classMethodDef;
-	node->mainFunc = (struct Main Func *)mainFunc;
+	node->mainFunc = (struct MainFunc *)mainFunc;
 	return (struct ast *)node;
 }
 
@@ -33,7 +36,7 @@ struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *p
 
 struct ast *change_class_prev(struct ast *_class, struct ast *prev)
 {
-	(struct Class *)_class->prev = (struct Class *)prev;
+	((struct Class *)_class)->prev = (struct Class *)prev;
 	return (struct ast *)_class;
 }
 
@@ -72,7 +75,7 @@ struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool 
 
 struct ast *change_vardecl_prev(struct ast *varDecl, struct ast *prev)
 {
-	(struct VarDecl *)varDecl->prev = (struct VarDecl *)prev;
+	((struct VarDecl *)varDecl)->prev = (struct VarDecl *)prev;
 	return (struct ast *)varDecl;
 }
 
@@ -93,7 +96,7 @@ struct ast *alloc_methoddecl(int type1, char *id, struct ast *type2, struct ast 
 
 struct ast *change_methoddecl_prev(struct ast *methodDecl, struct ast *prev)
 {
-	(struct MethodDecl *)methodDecl->prev = (struct MethodDecl *)prev;
+	((struct MethodDecl *)methodDecl)->prev = (struct MethodDecl *)prev;
 	return (struct ast *)methodDecl;
 }
 
@@ -115,7 +118,7 @@ struct ast *alloc_methoddef(int type1, char *id, struct ast *type2, struct ast *
 
 struct ast *change_methoddef_prev(struct ast *methodDef, struct ast *prev)
 {
-	(struct MethodDef *)methodDef->prev = (struct MethodDef *)prev;
+	((struct MethodDef *)methodDef)->prev = (struct MethodDef *)prev;
 	return (struct ast *)methodDef;
 }
 
@@ -138,7 +141,7 @@ struct ast *alloc_classmethoddef(int type1, struct ast *type2, char *className, 
 
 struct ast *change_classmethoddef_prev(struct ast *classMethodDef, struct ast *prev)
 {
-	(struct ClassMethodDef *)classMethodDef->prev = (struct ClassMethodDef *)prev;
+	((struct ClassMethodDef *)classMethodDef)->prev = (struct ClassMethodDef *)prev;
 	return (struct ast *)classMethodDef;
 }
 
@@ -170,7 +173,7 @@ struct ast *alloc_param(int type1, struct ast *type2, struct ast *ident, struct 
 
 struct ast *change_param_prev(struct ast *param, struct ast *prev)
 {
-	(struct Param *)param->prev = (struct Param *)prev;
+	((struct Param *)param)->prev = (struct Param *)prev;
 	return (struct ast *)param;
 }
 
@@ -248,7 +251,7 @@ struct ast *alloc_stmt(int type1, Stmt_e e, struct ast *stmt, struct ast *prev)
 
 struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev)
 {
-	(struct Stmt *)stmt->prev = (struct Stmt *)prev;
+	((struct Stmt *)stmt)->prev = (struct Stmt *)prev;
 	return (struct ast *)stmt;
 }
 
@@ -348,8 +351,8 @@ struct ast *alloc_ifstmt(int type, struct ast* cond, struct ast* ifbody, struct 
 	}
 	node->type = type;
 	node->cond = (struct Expr*)cond;
-	node->ifbody = (struct Stmt*)ifbody;
-	node->elsebody = (struct Stmt*)elsebody;
+	node->ifBody = (struct Stmt*)ifbody;
+	node->elseBody = (struct Stmt*)elsebody;
 	return (struct ast*)node;
 }
 
@@ -397,9 +400,9 @@ struct ast *alloc_operexpr(int type1, Oper_e e,
 	{
 	case eUn:
 		node->type.un = malloc(sizeof(struct UnOp));
-		node->type.un = (struct *UnOp)operexpr;
+		node->type.un = (struct UnOp*)operexpr;
 		break;
-	case Addi:
+	case eAddi:
 		node->type.addi = malloc(sizeof(struct AddiOp));
 		node->type.addi->lhs=(struct Expr*)expr1;
 		node->type.addi->rhs=(struct Expr*)expr2;
@@ -410,7 +413,7 @@ struct ast *alloc_operexpr(int type1, Oper_e e,
 		node->type.mult->rhs=(struct Expr*)expr2;
 		break;
 	case eRela:
-		noce->type.rela = malloc(sizeof(struct RelaOp));
+		node->type.rela = malloc(sizeof(struct RelaOp));
 		node->type.rela->lhs=(struct Expr*)expr1;
 		node->type.rela->rhs=(struct Expr*)expr2;
 		break;
@@ -516,6 +519,6 @@ struct ast *alloc_arg(int type, struct ast* expr, struct ast* prev)
 
 struct ast *change_arg_prev(struct ast *arg, struct ast *prev)
 {
-	(struct Arg *)arg->prev = (struct Arg *)prev;
+	((struct Arg *)arg)->prev = (struct Arg *)prev;
 	return (struct ast *)arg;
 }
