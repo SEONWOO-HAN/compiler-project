@@ -254,6 +254,90 @@ struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev)
 
 ////////////////////////////////////////////////////////////////////////////
 
+struct ast *alloc_exprstmt(int type, struct ast* expr)
+{
+	struct ExprStmt *node = malloc(sizeof(struct ExprStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->expr = (struct Expr*)expr;
+
+	return (struct ast*)node;
+}
+
+struct ast *alloc_assignstmt(int type, struct ast* refVarExpr, struct ast* expr)
+{
+	struct AssignStmt *node = malloc(sizeof(struct AssignStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->refVarExpr = refVarExpr;
+	node->expr = (struct Expr*)expr;
+
+	return (struct ast*)node;
+}
+
+struct ast *alloc_retstmt(int type, struct ast* expr)
+{
+	struct RetStmt *node = malloc(sizeof(struct RetStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->expr = (struct Expr*)expr;
+
+	return (struct ast*)node;
+}
+
+struct ast *alloc_whilestmt(int type, struct ast* cond, struct ast* body)
+{
+	struct WhileStmt *node = malloc(sizeof(struct WhileStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->cond = (struct Expr*)cond;
+	node->body = (struct Stmt*)body;
+
+	return (struct ast*)node;
+}
+
+struct ast *alloc_dostmt(int type, struct ast* cond, struct ast* body)
+{
+	struct DoStmt *node = malloc(sizeof(struct DoStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->cond = (struct Expr*)cond;
+	node->body = (struct Stmt*)body;
+
+	return (struct ast*)node;
+}
+
+struct ast *alloc_forstmt(int type, struct ast* init, struct ast* cond, struct ast* incr,
+				struct ast* body)
+{
+	struct ForStmt *node = malloc(sizeof(struct ForStmt));
+	if(!node) {
+		yyerror("out of space");
+		exit(0);
+	}
+	node->type = type;
+	node->init = (struct Expr*)init;
+	node->cond = (struct Expr*)cond;
+	node->incr = (struct Expr*)incr;
+	node->body = (struct body*)body;
+	return (struct ast*)node;
+
+}
 
 struct ast *alloc_ifstmt(int type, struct ast* cond, struct ast* ifbody, struct ast* elsebody)
 {
@@ -299,6 +383,7 @@ struct ast *alloc_expr(int type1, Expr_e e, int intnum, float floatnum, struct a
 
 //eUn, eAddi, eMult, eRela, eEqlt, eBracket
 //미완??????????
+//expr * expr인데 expr 각각할당?
 struct ast *alloc_operexpr(int type1, Oper_e e, 
 			struct ast* operexpr, struct ast* expr1, struct ast* expr2)
 {
