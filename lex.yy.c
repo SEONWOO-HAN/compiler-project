@@ -945,7 +945,7 @@ YY_RULE_SETUP
 case 31:
 YY_RULE_SETUP
 #line 59 "minicpp.l"
-{strcat(yylval.id_val, yytext); return ID;}
+{yylval.id_val = yytext; return ID;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP

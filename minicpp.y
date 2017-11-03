@@ -85,10 +85,10 @@ MethodDefList: FuncDef MethodDefList	{ $$ = change_methoddef_prev($1, $2); }
 |	{ $$ = NULL; }
 ;
 
-VarDecl: INT Ident COLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 1, 0, 0, NULL); }
-| FLOAT Ident COLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 0, 0, 0, NULL); }
+VarDecl: INT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 1, 0, 0, NULL); }
+| FLOAT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 0, 0, 0, NULL); }
 ;
-FuncDecl: Type ID OPRNTH ParamList CPRNTH COLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
+FuncDecl: Type ID OPRNTH ParamList CPRNTH SEMICOLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
 ;
 FuncDef: Type ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_methoddef(FUNCDEF, $2, $1, $4, $6, NULL); }
 ;
@@ -137,20 +137,20 @@ Stmt: ExprStmt	{ $$ = alloc_stmt(STMT, eExpr, $1, NULL); }
 | CompoundStmt { $$ = alloc_stmt(STMT, eCompound, $1, NULL); }
 ;
 
-ExprStmt: Expr COLON	{ $$ = alloc_exprstmt(EXPRSTMT, $1); }
+ExprStmt: Expr SEMICOLON	{ $$ = alloc_exprstmt(EXPRSTMT, $1); }
 ;
 
-AssignStmt: RefVarExpr ASSIGNMENT Expr COLON	{ $$ = alloc_assignstmt(ASSIGNMENT, $1, $3); }
+AssignStmt: RefVarExpr ASSIGNMENT Expr SEMICOLON	{ $$ = alloc_assignstmt(ASSIGNMENT, $1, $3); }
 ;
 
-RetStmt: RETURN Expr COLON	{ $$ = alloc_retstmt(RETURN, $2); }
-| RETURN COLON	{ $$ = alloc_retstmt(RETURN, NULL); }
+RetStmt: RETURN Expr SEMICOLON	{ $$ = alloc_retstmt(RETURN, $2); }
+| RETURN SEMICOLON	{ $$ = alloc_retstmt(RETURN, NULL); }
 ;
 
 WhileStmt: WHILE OPRNTH Expr CPRNTH Stmt	{ $$ = alloc_whilestmt(WHILE, $3, $5); }
 ;
 
-DoStmt: DO Stmt WHILE OPRNTH Expr CPRNTH COLON	{ $$ = alloc_dostmt(DO, $5, $2); }
+DoStmt: DO Stmt WHILE OPRNTH Expr CPRNTH SEMICOLON	{ $$ = alloc_dostmt(DO, $5, $2); }
 ;
 
 ForStmt: FOR OPRNTH Expr SEMICOLON Expr SEMICOLON Expr CPRNTH Stmt	{ $$ = alloc_forstmt(FOR, $3, $5, $7, $9); }
@@ -162,11 +162,11 @@ IfStmt: IF OPRNTH Expr CPRNTH Stmt EL Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, $7); 
 
 Expr: OperExpr	{ Expr_e e = eOper;
 $$ = alloc_expr(EXPR, e, 0, 0, $1); }
-| RefExpr	{ Expr_e e = eOper;
+| RefExpr	{ Expr_e e = eRef;
 $$ = alloc_expr(EXPR, e, 0, 0, $1); }
-| INTNUM	{ Expr_e e = eInt;
+| INTNUM	{ Expr_e e = eIntnum;
 $$ = alloc_expr(EXPR, e, $1, 0, NULL); }
-| FLOATNUM	{ Expr_e e = eFloat;
+| FLOATNUM	{ Expr_e e = eFloatnum;
 $$ = alloc_expr(EXPR, e, $1, 0, NULL); }
 ;
 

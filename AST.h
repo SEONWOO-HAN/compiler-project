@@ -404,6 +404,9 @@ struct ast *alloc_identexpr(int type, char* id, struct ast* expr);
 struct ast *alloc_callexpr(int type, char* id, struct ast* arg);
 struct ast *alloc_arg(int type, struct ast* expr, struct ast* prev);
 struct ast *change_arg_prev(struct ast *arg, struct ast *prev);
+
+void print_ast_cover(struct ast *)
+void print_ast(int fd, struct ast *);
 //void free_ast(struct ast *);
 
 #endif
