@@ -396,22 +396,32 @@ struct ast *alloc_operexpr(int type1, Oper_e e,
 	switch(e)
 	{
 	case eUn:
+		node->type.un = malloc(sizeof(struct UnOp));
 		node->type.un = (struct *UnOp)operexpr;
 		break;
 	case Addi:
-		node->type.addi = (struct *AddiOp)operexpr;
+		node->type.addi = malloc(sizeof(struct AddiOp));
+		node->type.addi->lhs=(struct Expr*)expr1;
+		node->type.addi->rhs=(struct Expr*)expr2;
 		break;
 	case eMult:
-		node->type.mult = (struct *MultOp)operexpr;
+		node->type.mult = malloc(sizeof(struct MultOp));
+		node->type.mult->lhs=(struct Expr*)expr1;
+		node->type.mult->rhs=(struct Expr*)expr2;
 		break;
 	case eRela:
-		node->type.rela = (struct *RelaOp)operexpr;
+		noce->type.rela = malloc(sizeof(struct RelaOp));
+		node->type.rela->lhs=(struct Expr*)expr1;
+		node->type.rela->rhs=(struct Expr*)expr2;
 		break;
 	case eEqlt:
-		node->type.eqlt = (struct *EqltOp)operexpr;
+		node->type.eqlt = malloc(sizeof(struct EqltOp));
+		node->type.eqlt->lhs=(struct Expr*)expr1;
+		node->type.eqlt->rhs=(struct Expr*)expr2;
 		break;
 	case eBracket:
-		node->type.bracket = (struct *Expr)expr1;
+		node->type.bracket = malloc(sizeof(struct Expr));
+		node->type.bracket=(struct Expr*)expr1;
 		break;	
 	}
 	return (struct ast*)node;
@@ -502,4 +512,10 @@ struct ast *alloc_arg(int type, struct ast* expr, struct ast* prev)
 	node->expr = (struct Expr*)expr;
 	node->prev = (struct Arg*)prev;
 	return (struct ast*)node;
+}
+
+struct ast *change_arg_prev(struct ast *arg, struct ast *prev)
+{
+	(struct Arg *)arg->prev = (struct Arg *)prev;
+	return (struct ast *)arg;
 }
