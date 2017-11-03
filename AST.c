@@ -524,55 +524,93 @@ struct ast *change_arg_prev(struct ast *arg, struct ast *prev)
 	return (struct ast *)arg;
 }
 
-void print_ast_cover(struct ast *node)
+#define MAX 1024
+
+struct ast *queue[MAX];
+int front, rear;
+
+void init_quque()
 {
-	int fd;
-	if((fd=open("ast",O_WRONLY)) < 0){
-
-	}
-
-	print_ast(fd, node);
+	front = 0;
+	rear = 0;
 }
 
-void print_ast(int fd, struct ast *node)
+void put(struct ast *node)
 {
-	// PROGRAM MEMBER VARIABLE FUNCDECL FUNCDEF CLASSMETHODDEF PARAM TYPE COMPOUNDSTMT STMT EXPRSTMT EXPR OPEREXPR REFEXPR REFVAREXPR REFCALLEXPR IDENTEXPR CALLEXPR ARGLIST
-	switch(node->type)
+	if((rear + 1) % MAX == front)
 	{
-		case PROGRAM:
-		if(((struct Program *)node)->_class != NULL)
-			print_ast(fd, (struct ast *)((struct Program *)node)->_class);
-		if(((struct Program *)node)->classMethodDef != NULL)
-			print_ast(fd, (struct ast *)((struct Program *)node)->classMethodDef);
-		if(((struct Program *)node)->mainFunc != NULL)
-			print_ast(fd, (struct ast *)((struct Program *)node)->mainFunc);
-		case CLASS:
-		case MEMBER:
-		case VARIABLE:
-		case FUNCDECL:
-		case FUNCDEF:
-		case CLASSMETHODDEF:
-		case MAIN:
-		case PARAM:
-		case ID:
-		case TYPE:
-		case COMPOUNDSTMT:
-		case STMT:
-		case EXPRSTMT:
-		case ASSIGNMENT:
-		case RETURN:
-		case WHILE:
-		case DO:
-		case FOR:
-		case IF:
-		case EXPR:
-		case OPEREXPR:
-		case REFEXPR:
-		case REFVAREXPR:
-		case REFCALLEXPR:
-		case IDENTEXPR:
-		case CALLEXPR:
-		case ARGLIST:
+		yyerror("queue overflow");
+		exit(0);
+	}
+
+	queue[rear] = node;
+	rear = ++rear % MAX;
+}
+
+bool empty()
+{
+	if(front == rear)
+		return true;
+	return false;
+}
+
+struct ast *get()
+{
+	if(empty())
+	{
+		yyerror("queue underflow");
+		exit(0);
+	}
+
+	struct ast *node = queue[front];
+	front = ++front % MAX;
+	return node;
+}
+
+void print_ast(struct ast *node)
+{
+	put(node);
+	while(!empty())
+	{		
+		// file out
+		struct ast *current = get();
+		switch(current->type)
+		{
+			case PROGRAM:
+				if(((struct Program *)current)->_class != NULL)
+					put(((struct Program *)current)->_class);
+				if(((struct Program *)current)->classMethodDef != NULL)
+					put(((struct Program *)current)->classMethodDef);
+				if(((struct Program *)current)->mainFunc != NULL)
+					put(((struct Program *)current)->mainFunc);
+			case CLASS:
+			case MEMBER:
+			case VARIABLE:
+			case FUNCDECL:
+			case FUNCDEF:
+			case CLASSMETHODDEF:
+			case MAIN:
+			case PARAM:
+			case ID:
+			case TYPE:
+			case COMPOUNDSTMT:
+			case STMT:
+			case EXPRSTMT:
+			case ASSIGNMENT:
+			case RETURN:
+			case WHILE:
+			case DO:
+			case FOR:
+			case IF:
+			case EXPR:
+			case OPEREXPR:
+			case REFEXPR:
+			case REFVAREXPR:
+			case REFCALLEXPR:
+			case IDENTEXPR:
+			case CALLEXPR:
+			case ARGLIST:
+		}
 	}
 
 }
