@@ -76,7 +76,25 @@ extern int yydebug;
     UNOP = 286,
     DOT = 287,
     COMMA = 288,
-    PROGRAM = 289
+    PROGRAM = 289,
+    MEMBER = 290,
+    VARIABLE = 291,
+    FUNCDECL = 292,
+    FUNCDEF = 293,
+    CLASSMETHODDEF = 294,
+    PARAM = 295,
+    TYPE = 296,
+    COMPOUNDSTMT = 297,
+    STMT = 298,
+    EXPRSTMT = 299,
+    EXPR = 300,
+    OPEREXPR = 301,
+    REFEXPR = 302,
+    REFVAREXPR = 303,
+    REFCALLEXPR = 304,
+    IDENTEXPR = 305,
+    CALLEXPR = 306,
+    ARGLIST = 307
   };
 #endif
 
@@ -92,7 +110,7 @@ union YYSTYPE
 	int int_val;
 	float float_val;
 
-#line 96 "minicpp.tab.h" /* yacc.c:1909  */
+#line 114 "minicpp.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

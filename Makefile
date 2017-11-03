@@ -1,5 +1,5 @@
 TARGET = minicpp
-OBJECTS = lex.yy.c minicpp.tab.c minicpp.tap.h
+OBJECTS = lex.yy.c minicpp.tab.c minicpp.tab.h
 
 $(TARGET) : $(OBJECTS)
 	gcc -o $@ $^ -lfl

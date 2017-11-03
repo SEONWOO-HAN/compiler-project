@@ -51,7 +51,7 @@ struct ast *alloc_member(int type, struct ast *varDecl, struct ast *methodDecl, 
 	return (struct ast *)node;
 }
 
-struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, union { int intnum; float floatnum; } assigner, struct ast *prev)
+struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev)
 {
 	struct VarDecl *node = malloc(sizeof(struct VarDecl));
 	if(!node) {
@@ -63,9 +63,9 @@ struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool 
 	node->ident = (struct Ident *)ident;
 	node->isInt = isInt;
 	if(isInt)
-		node->assigner.intnum = assigner.intnum;
+		node->assigner.intnum = intnum;
 	else
-		node->assigner.floatnum = assigner.floatnum;
+		node->assigner.floatnum = floatnum;
 	node->prev = (struct VarDecl *)prev;
 	return (struct ast *)node;
 }
@@ -213,7 +213,7 @@ struct ast *alloc_compoundstmt(int type, struct ast *varDecl, struct ast *stmt)
 	return (struct ast *)node;
 }
 
-struct ast *alloc_stmt(int type1, Stmt_e e, union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2, struct ast *prev)
+struct ast *alloc_stmt(int type1, Stmt_e e, struct ast *stmt, struct ast *prev)
 {
 	struct Stmt *node = malloc(sizeof(struct Stmt));
 	if(!node) {
@@ -223,21 +223,21 @@ struct ast *alloc_stmt(int type1, Stmt_e e, union { struct ast *exprStmt; struct
 	node->type1 = type1;
 	node->e = e;
 	if(e == eExpr)
-		node->type2.exprStmt = type2.exprStmt;
+		node->type2.exprStmt = (struct ExprStmt *)stmt;
 	else if(e == eAssign)
-		node->type2.assignStmt = type2.assignStmt;
+		node->type2.assignStmt = (struct AssignStmt *)stmt;
 	else if(e == eRet)
-		node->type2.retStmt = type2.retStmt;
+		node->type2.retStmt = (struct ReturnStmt *)stmt;
 	else if(e == eWhile)
-		node->type2.whileStmt = type2.whileStmt;
+		node->type2.whileStmt = (struct WhileStmt *)stmt;
 	else if(e == eDo)
-		node->type2.doStmt = type2.doStmt;
+		node->type2.doStmt = (struct DoStmt *)stmt;
 	else if(e == eFor)
-		node->type2.forStmt = type2.forStmt;
+		node->type2.forStmt = (struct ForStmt *)stmt;
 	else if(e == eIf)
-		node->type2.ifStmt = type2.ifStmt;
+		node->type2.ifStmt = (struct IfStmt *)stmt;
 	else if(e == eCompound)
-		node->type2.compoundStmt = type2.compoundStmt;
+		node->type2.compoundStmt = (struct CompoundStmt *)stmt;
 	else {
 		yyerror("wrong statement");
 		exit(0);

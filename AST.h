@@ -154,7 +154,7 @@ struct Param {
 // Ident := id
 //        | id [ intnum ]
 struct Ident {
-	int type
+	int type;
 	char *id;
 	int len; // 0 if scalar
 };
@@ -163,7 +163,7 @@ struct Ident {
 //       | float
 //       | id
 struct Type {
-	int type
+	int type;
 	char *id; // NULL unless class type
 	Type_e e;
 };
@@ -320,7 +320,27 @@ struct IdentExpr {
 struct CallExpr {
 	int type;
 	char *id;
-	struct Arg *arg;
+	struct Ar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+g *arg;
 };
 
 // ArgList := Expr (, Expr)*
@@ -371,7 +391,7 @@ struct ast *alloc_program(int type, struct ast *_class, struct ast *classMethodD
 struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *pubMember, struct ast *prev);
 struct ast *change_class_prev(struct ast *_class, struct ast *prev);
 struct ast *alloc_member(int type, struct ast *varDecl, struct ast *methodDecl, struct ast *methodDef);
-struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, union { int intnum; float floatnum; } assigner, struct ast *prev);
+struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev);
 struct ast *change_vardecl_prev(struct ast *varDecl, struct ast *prev);
 struct ast *alloc_methoddecl(int type1, char *id, struct ast *type2, struct ast *param, struct ast *prev);
 struct ast *change_methoddecl_prev(struct ast *methodDecl, struct ast *prev);
@@ -385,7 +405,7 @@ struct ast *change_param_prev(struct ast *param, struct ast *prev);
 struct ast *alloc_ident(int type, char *id, int len);
 struct ast *alloc_type(int type, char *id, Type_e e);
 struct ast *alloc_compoundstmt(int type, struct ast *varDecl, struct ast *stmt);
-struct ast *alloc_stmt(int type1, Stmt_e e, union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2, struct ast *prev);
+struct ast *alloc_stmt(int type1, Stmt_e e, struct ast *stmt, struct ast *prev);
 struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev);
 
 struct ast *alloc_exprstmt(int type, struct ast* expr);

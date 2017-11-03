@@ -50,7 +50,7 @@ void yyerror(char *str);
 
 Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); }
 | ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); }
-| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $2, $3); }
+| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); }
 | MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); }
 ;
 
@@ -66,10 +66,10 @@ Class: CLASS ID OBRACE PRIVATE COLON Member CBRACE	{ $$ = alloc_class(CLASS, $2,
 Member: VarDeclList	{ $$ = alloc_member(MEMBER, $1, NULL, NULL); }
 | VarDeclList MethodDeclList	{ $$ = alloc_member(MEMBER, $1, $2, NULL); }
 | VarDeclList MethodDeclList MethodDefList	{ $$ = alloc_member(MEMBER, $1, $2, $3); }
-| VarDeclList MethodDefList	{ $$ = alloc_member(MEMBER, $1, NULL, $3); }
-| MethodDeclList MethodDefList	{ $$ = alloc_member(MEMBER, NULL, $2, $3); }
-| MethodDeclList	{ $$ = alloc_member(MEMBER, NULL, $2, NULL); }
-| MethodDefList	{ $$ = alloc_member(MEMBER, NULL, NULL, $3); }
+| VarDeclList MethodDefList	{ $$ = alloc_member(MEMBER, $1, NULL, $2); }
+| MethodDeclList MethodDefList	{ $$ = alloc_member(MEMBER, NULL, $1, $2); }
+| MethodDeclList	{ $$ = alloc_member(MEMBER, NULL, $1, NULL); }
+| MethodDefList	{ $$ = alloc_member(MEMBER, NULL, NULL, $1); }
 |	{ $$ = NULL; }
 ;
 
@@ -83,10 +83,8 @@ MethodDefList: FuncDef MethodDefList	{ $$ = change_methoddef_prev($1, $2); }
 |	{ $$ = NULL; }
 ;
 
-VarDecl: INT Ident COLON	{ union { int intnum; float floatnum; } assigner;
-$$ = alloc_vardecl(VARIABLE, NULL, $2, 1, assigner, NULL); }
-| FLOAT Ident COLON	{ union { int intnum; float floatnum; } assigner;
-$$ = alloc_vardecl(VARIABLE, NULL, $2, 0, assigner, NULL); }
+VarDecl: INT Ident COLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 1, 0, 0, NULL); }
+| FLOAT Ident COLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 0, 0, 0, NULL); }
 ;
 FuncDecl: Type ID OPRNTH ParamList CPRNTH COLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
 ;
@@ -97,7 +95,7 @@ ClassMethodList: ClassMethodDef ClassMethodList	{ $$ = change_classmethoddef_pre
 |	{ $$ = NULL; }
 ;
 ClassMethodDef: Type ID COLON COLON ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, $7, $9, NULL); }
-| Type ID COLON COLON ID OPRNTH CPRNTH CompoundStmt { $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, NULL, $9, NULL); }
+| Type ID COLON COLON ID OPRNTH CPRNTH CompoundStmt { $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, NULL, $8, NULL); }
 ;
 
 MainFunc: INT MAIN OPRNTH CPRNTH CompoundStmt	{ $$ = alloc_mainfunc(MAIN, $5); }
@@ -111,7 +109,7 @@ Param: Type Ident	{ $$ = alloc_param(PARAM, $1, $2, NULL); }
 ;
 
 Ident: ID	{ $$ = alloc_ident(ID, $1, 0); }
-| ID OBRCK INTNUM CBRCK	{ $$ = alloc_ident(ID, $1, $3) }
+| ID OBRCK INTNUM CBRCK	{ $$ = alloc_ident(ID, $1, $3); }
 ;
 Type: INT	{ $$ = alloc_type(TYPE, NULL, eInt); }
 | FLOAT	{ $$ = alloc_type(TYPE, NULL, eFloat); }
@@ -127,30 +125,14 @@ StmtList: Stmt StmtList	{ $$ = change_stmt_prev($1, $2); }
 |	{ $$ = NULL; }
 ;
 
-Stmt: ExprStmt	{ union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.exprStmt = $1;
-$$ = alloc_stmt(STMT, eExpr, type2, NULL); }
-| AssignStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.assignStmt = $1;
-$$ = alloc_stmt(STMT, eAssign, type2, NULL); }
-| RetStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.retStmt = $1;
-$$ = alloc_stmt(STMT, eRet, type2, NULL); }
-| WhileStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.whileStmt = $1;
-$$ = alloc_stmt(STMT, eWhile, type2, NULL); }
-| DoStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.doStmt = $1;
-$$ = alloc_stmt(STMT, eDo, type2, NULL); }
-| ForStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.forStmt = $1;
-$$ = alloc_stmt(STMT, eFor, type2, NULL); }
-| IfStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.ifStmt = $1;
-$$ = alloc_stmt(STMT, eIf, type2, NULL); }
-| CompoundStmt { union { struct ast *exprStmt; struct ast *assignStmt; struct ast *retStmt; struct ast *whileStmt; struct ast *doStmt; struct ast *forStmt; struct ast *ifStmt; struct ast *compoundStmt;} type2; 
-type2.compoundStmt = $1;
-$$ = alloc_stmt(STMT, eCompound, type2, NULL); }
+Stmt: ExprStmt	{ $$ = alloc_stmt(STMT, eExpr, $1, NULL); }
+| AssignStmt { $$ = alloc_stmt(STMT, eAssign, $1, NULL); }
+| RetStmt { $$ = alloc_stmt(STMT, eRet, $1, NULL); }
+| WhileStmt { $$ = alloc_stmt(STMT, eWhile, $1, NULL); }
+| DoStmt { $$ = alloc_stmt(STMT, eDoo, $1, NULL); }
+| ForStmt { $$ = alloc_stmt(STMT, eFor, $1, NULL); }
+| IfStmt { $$ = alloc_stmt(STMT, eIf, $1, NULL); }
+| CompoundStmt { $$ = alloc_stmt(STMT, eCompound, $1, NULL); }
 ;
 
 ExprStmt: Expr COLON	{ $$ = alloc_exprstmt(EXPRSTMT, $1); }
@@ -206,12 +188,12 @@ $$ = alloc_refexpr(REFEXPR, e, $1); }
 $$ = alloc_refexpr(REFEXPR, e, $1); }
 ;
 
-RefVarExpr: RefExpr DOT IdentExpr	{ $$ = alloc_refvarexpr(REFVAR, $1, $3); }
-| IdentExpr	{ $$ = alloc_refvarexpr(REFCALLEXPR, NULL, $3); }
+RefVarExpr: RefExpr DOT IdentExpr	{ $$ = alloc_refvarexpr(REFVAREXPR, $1, $3); }
+| IdentExpr	{ $$ = alloc_refvarexpr(REFCALLEXPR, NULL, $1); }
 ;
 
-RefCallExpr: RefExpr DOT CallExpr	{ $$ = alloc_refcallexpr(REFCALL, $1, $3); }
-| CallExpr	{ $$ = alloc_refcallexpr(REFCALLEXPR, NULL, $3); }
+RefCallExpr: RefExpr DOT CallExpr	{ $$ = alloc_refcallexpr(REFCALLEXPR, $1, $3); }
+| CallExpr	{ $$ = alloc_refcallexpr(REFCALLEXPR, NULL, $1); }
 ;
 IdentExpr: ID OBRCK Expr CBRCK	{ $$ = alloc_identexpr(IDENTEXPR, $1, $3); }
 | ID	{ $$ = alloc_identexpr(IDENTEXPR, $1, NULL); }
