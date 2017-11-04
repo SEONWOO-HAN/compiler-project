@@ -53,10 +53,10 @@ FILE *yyin;
 
 /* rules & actions */
 
-Program: ClassList MainFunc END	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
-| ClassList ClassMethodList MainFunc END	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); }
-| ClassMethodList MainFunc END	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); }
-| MainFunc END	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
+Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
+| ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); }
+| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); }
+| MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
 ;
 
 ClassList: Class	{ $$ = $1; }

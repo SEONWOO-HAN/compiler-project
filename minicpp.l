@@ -13,19 +13,18 @@ define NAME / return TOKEN
 
 %}
 
-UNOP		[-]
-ADDIOP		[\-]|[\+]
-MULTOP		[\*]|[\/]|[\%]
-RELAOP		[<]|[>]|[<=]|[>=]
-EQLTOP		[==]|[!=]
-ASSIGNMENT	[\=]
+UNOP		"-"
+ADDIOP		[\-\+]
+MULTOP		[\*\/\%]
+RELAOP		("<="|">="|"<"|">")
+EQLTOP		("=="|"!=")
+ASSIGNMENT	"="
 ID		[A-Za-z_][A-Za-z0-9_]*
 
 %%
 [\t]		{}
 \n		{}
 " "	{}
-<<EOF>>	{return END;}
 
 "class"		{return CLASS;}
 "private"	{return PRIVATE;}
@@ -62,7 +61,7 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 {ID}		{yylval.id_val = strdup(yytext); return ID;}
 
 [0-9]+		{yylval.int_val = atoi(yytext); return INTNUM;}
-[0-9]+.[0-9]*	{
+[0-9]+.[0-9]+	{
 			float temp;
 			sscanf(yytext, "%lf", &temp);
 			yylval.float_val = temp;
