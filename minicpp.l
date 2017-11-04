@@ -14,10 +14,11 @@ define NAME / return TOKEN
 %}
 
 UNOP		[-]
-ADDIOP		[-]|[+]
-MULTOP		[*]|[/]|[%]
+ADDIOP		[\-]|[\+]
+MULTOP		[\*]|[\/]|[\%]
 RELAOP		[<]|[>]|[<=]|[>=]
 EQLTOP		[==]|[!=]
+ASSIGNMENT	[\=]
 ID		[A-Za-z_][A-Za-z0-9_]*
 
 %%
@@ -57,6 +58,7 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 {MULTOP}	{return MULTOP;}
 {RELAOP}	{return RELAOP;}
 {EQLTOP}	{return EQLTOP;}
+{ASSIGNMENT}	{return ASSIGNMENT;}
 {ID}		{yylval.id_val = strdup(yytext); return ID;}
 
 [0-9]+		{yylval.int_val = atoi(yytext); return INTNUM;}

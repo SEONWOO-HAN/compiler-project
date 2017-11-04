@@ -846,8 +846,9 @@ void print_ast(struct ast *node)
 					put((struct ast *)((struct ExprStmt *)current)->expr);
 					descendant_count++;
 				}
+				break;
 			case ASSIGNMENT:
-				fprintf(fp, "ArrignStmt ");
+				fprintf(fp, "AssignStmt ");
 				if(((struct AssignStmt *)current)->refVarExpr != NULL)
 				{
 					put((struct ast *)((struct AssignStmt *)current)->refVarExpr);
@@ -858,6 +859,7 @@ void print_ast(struct ast *node)
 					put((struct ast *)((struct AssignStmt *)current)->expr);
 					descendant_count++;
 				}
+				break;
 			case RETURN:
 				fprintf(fp, "RetStmt ");
 				if(((struct RetStmt *)current)->expr != NULL)
@@ -865,6 +867,7 @@ void print_ast(struct ast *node)
 					put((struct ast *)((struct RetStmt *)current)->expr);
 					descendant_count++;
 				}
+				break;
 			case WHILE:
 				fprintf(fp, "WhileStmt ");
 				if(((struct WhileStmt *)current)->cond != NULL)
@@ -877,6 +880,7 @@ void print_ast(struct ast *node)
 					put((struct ast *)((struct WhileStmt *)current)->body);
 					descendant_count++;
 				}
+				break;
 			case DO:
 				fprintf(fp, "DoStmt ");
 				if(((struct DoStmt*)current)->cond != NULL)
@@ -961,7 +965,6 @@ void print_ast(struct ast *node)
 					fprintf(fp, "ExprStmt(%f) ", floatnum);
 				}	
 				break;
-			
 			case OPEREXPR:
 				fprintf(fp, "OperExpr ");
 				if(((struct OperExpr*)current)->e == eUn)

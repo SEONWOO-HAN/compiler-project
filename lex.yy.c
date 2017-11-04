@@ -445,8 +445,8 @@ static void yynoreturn yy_fatal_error (yyconst char* msg  );
 	(yy_c_buf_p) = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 35
-#define YY_END_OF_BUFFER 36
+#define YY_NUM_RULES 36
+#define YY_END_OF_BUFFER 37
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -456,14 +456,14 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[81] =
     {   0,
-        0,    0,   36,   34,    1,    2,    3,   30,   28,   18,
-       19,   27,   25,   26,   24,   32,   23,   22,   29,   29,
-       31,   20,   21,   31,   31,   31,   31,   31,   31,   31,
-       31,   31,   16,   17,   33,   32,   31,   31,   10,   31,
-       31,   31,   12,   31,   31,   31,   31,   31,   31,   33,
-       32,   31,   31,   31,   11,   14,   31,   31,   31,   31,
-       31,   31,   13,   31,    7,   31,   31,   31,   31,    4,
-       15,   31,   31,   31,    9,   31,    6,    8,    5,    0
+        0,    0,   37,   35,    1,    2,    3,   30,   28,   18,
+       19,   27,   25,   26,   24,   33,   23,   22,   29,   29,
+       32,   20,   21,   32,   32,   32,   32,   32,   32,   32,
+       32,   32,   16,   17,   34,   33,   32,   32,   10,   32,
+       32,   32,   12,   32,   32,   32,   32,   32,   32,   34,
+       33,   32,   32,   32,   11,   14,   32,   32,   32,   32,
+       32,   32,   13,   32,    7,   32,   32,   32,   32,    4,
+       15,   32,   32,   32,    9,   32,    6,    8,    5,    0
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -577,12 +577,12 @@ static char *yy_last_accepting_cpos;
 extern int yy_flex_debug;
 int yy_flex_debug = 1;
 
-static yyconst flex_int16_t yy_rule_linenum[35] =
+static yyconst flex_int16_t yy_rule_linenum[36] =
     {   0,
-       24,   25,   26,   29,   30,   31,   32,   33,   34,   35,
-       36,   37,   38,   40,   41,   43,   44,   45,   46,   47,
-       48,   50,   51,   52,   53,   55,   56,   57,   58,   59,
-       60,   62,   63,   70
+       25,   26,   27,   30,   31,   32,   33,   34,   35,   36,
+       37,   38,   39,   41,   42,   44,   45,   46,   47,   48,
+       49,   51,   52,   53,   54,   56,   57,   58,   59,   60,
+       61,   62,   64,   65,   72
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -892,7 +892,7 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 23 "minicpp.l"
+#line 24 "minicpp.l"
 
 #line 898 "lex.yy.c"
 
@@ -952,13 +952,13 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				fprintf( stderr, "--scanner backing up\n" );
-			else if ( yy_act < 35 )
+			else if ( yy_act < 36 )
 				fprintf( stderr, "--accepting rule at line %ld (\"%s\")\n",
 				         (long)yy_rule_linenum[yy_act], yytext );
-			else if ( yy_act == 35 )
+			else if ( yy_act == 36 )
 				fprintf( stderr, "--accepting default rule (\"%s\")\n",
 				         yytext );
-			else if ( yy_act == 36 )
+			else if ( yy_act == 37 )
 				fprintf( stderr, "--(end of buffer or a NUL)\n" );
 			else
 				fprintf( stderr, "--EOF (start condition %d)\n", YY_START );
@@ -976,172 +976,177 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 24 "minicpp.l"
+#line 25 "minicpp.l"
 {}
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 25 "minicpp.l"
+#line 26 "minicpp.l"
 {}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 26 "minicpp.l"
+#line 27 "minicpp.l"
 {}
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 27 "minicpp.l"
+#line 28 "minicpp.l"
 {return END;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 29 "minicpp.l"
+#line 30 "minicpp.l"
 {return CLASS;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 30 "minicpp.l"
+#line 31 "minicpp.l"
 {return PRIVATE;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 31 "minicpp.l"
+#line 32 "minicpp.l"
 {return PUBLIC;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 32 "minicpp.l"
+#line 33 "minicpp.l"
 {return MAIN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 33 "minicpp.l"
+#line 34 "minicpp.l"
 {return RETURN;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 34 "minicpp.l"
+#line 35 "minicpp.l"
 {return WHILE;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 35 "minicpp.l"
+#line 36 "minicpp.l"
 {return DO;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 36 "minicpp.l"
+#line 37 "minicpp.l"
 {return FOR;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 37 "minicpp.l"
+#line 38 "minicpp.l"
 {return IF;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 38 "minicpp.l"
+#line 39 "minicpp.l"
 {return EL;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 40 "minicpp.l"
+#line 41 "minicpp.l"
 {return INT;}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 41 "minicpp.l"
+#line 42 "minicpp.l"
 {return FLOAT;}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 43 "minicpp.l"
+#line 44 "minicpp.l"
 {return OBRACE;}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 44 "minicpp.l"
+#line 45 "minicpp.l"
 {return CBRACE;}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 45 "minicpp.l"
+#line 46 "minicpp.l"
 {return OPRNTH;}
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "minicpp.l"
+#line 47 "minicpp.l"
 {return CPRNTH;}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 47 "minicpp.l"
+#line 48 "minicpp.l"
 {return OBRCK;}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 48 "minicpp.l"
+#line 49 "minicpp.l"
 {return CBRCK;}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 50 "minicpp.l"
+#line 51 "minicpp.l"
 {return SEMICOLON;}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 51 "minicpp.l"
+#line 52 "minicpp.l"
 {return COLON;}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 52 "minicpp.l"
+#line 53 "minicpp.l"
 {return DOT;}
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 53 "minicpp.l"
+#line 54 "minicpp.l"
 {return COMMA;}
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 55 "minicpp.l"
+#line 56 "minicpp.l"
 {return UNOP;}
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 56 "minicpp.l"
+#line 57 "minicpp.l"
 {return ADDIOP;}
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 57 "minicpp.l"
+#line 58 "minicpp.l"
 {return MULTOP;}
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 58 "minicpp.l"
+#line 59 "minicpp.l"
 {return RELAOP;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 59 "minicpp.l"
+#line 60 "minicpp.l"
 {return EQLTOP;}
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 60 "minicpp.l"
-{yylval.id_val = strdup(yytext); return ID;}
+#line 61 "minicpp.l"
+{return ASSIGNMENT;}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 62 "minicpp.l"
-{yylval.int_val = atoi(yytext); return INTNUM;}
+{yylval.id_val = strdup(yytext); return ID;}
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 63 "minicpp.l"
+#line 64 "minicpp.l"
+{yylval.int_val = atoi(yytext); return INTNUM;}
+	YY_BREAK
+case 34:
+YY_RULE_SETUP
+#line 65 "minicpp.l"
 {
 			float temp;
 			sscanf(yytext, "%lf", &temp);
@@ -1149,17 +1154,17 @@ YY_RULE_SETUP
 			return FLOATNUM;
 }
 	YY_BREAK
-case 34:
-YY_RULE_SETUP
-#line 70 "minicpp.l"
-{fprintf(stderr, "error: mystery character '%c'\n", *yytext);}
-	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 72 "minicpp.l"
+{fprintf(stderr, "error: mystery character '%c'\n", *yytext);}
+	YY_BREAK
+case 36:
+YY_RULE_SETUP
+#line 74 "minicpp.l"
 ECHO;
 	YY_BREAK
-#line 1163 "lex.yy.c"
+#line 1168 "lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2304,7 +2309,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 72 "minicpp.l"
+#line 74 "minicpp.l"
 
 
 

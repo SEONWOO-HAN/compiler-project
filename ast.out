@@ -1,3 +1,5 @@
 Program 
 MainFunc 
 CompoundStmt 
+VarDecl Stmt 
+Ident(i) RetStmt 

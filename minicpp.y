@@ -59,7 +59,8 @@ Program: ClassList MainFunc END	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); pri
 | MainFunc END	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
 ;
 
-ClassList: Class ClassList	{ $$ = change_class_prev($1, $2); }
+ClassList: Class	{ $$ = $1; }
+| Class ClassList	{ $$ = change_class_prev($1, $2); }
 ;
 
 Class: CLASS ID OBRACE PRIVATE COLON Member CBRACE	{ $$ = alloc_class(CLASS, $2, $6, NULL, NULL); }
@@ -76,11 +77,14 @@ Member: VarDeclList	{ $$ = alloc_member(MEMBER, $1, NULL, NULL); }
 | MethodDefList	{ $$ = alloc_member(MEMBER, NULL, NULL, $1); }
 ;
 
-VarDeclList: VarDecl VarDeclList	{ $$ = change_vardecl_prev($1, $2); }
+VarDeclList: VarDecl	{ $$ = $1; }
+| VarDecl VarDeclList	{ $$ = change_vardecl_prev($1, $2); }
 ;
-MethodDeclList: FuncDecl MethodDeclList	{ $$ = change_methoddecl_prev($1, $2); }
+MethodDeclList: FuncDecl	{ $$ = $1; }
+| FuncDecl MethodDeclList	{ $$ = change_methoddecl_prev($1, $2); }
 ;
-MethodDefList: FuncDef MethodDefList	{ $$ = change_methoddef_prev($1, $2); }
+MethodDefList: FuncDef	{ $$ = $1; }
+| FuncDef MethodDefList	{ $$ = change_methoddef_prev($1, $2); }
 ;
 
 VarDecl: INT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 1, 0, 0, NULL); }
