@@ -60,7 +60,6 @@ Program: ClassList MainFunc END	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); pri
 ;
 
 ClassList: Class ClassList	{ $$ = change_class_prev($1, $2); }
-|	{ $$ = NULL; }
 ;
 
 Class: CLASS ID OBRACE PRIVATE COLON Member CBRACE	{ $$ = alloc_class(CLASS, $2, $6, NULL, NULL); }
