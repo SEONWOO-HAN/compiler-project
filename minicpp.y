@@ -51,9 +51,9 @@ FILE *yyin;
 /* rules & actions */
 
 Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
-| ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); }
-| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); }
-| MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); }
+| ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); }
+| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); }
+| MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
 ;
 
 ClassList: Class ClassList	{ $$ = change_class_prev($1, $2); }
@@ -72,29 +72,27 @@ Member: VarDeclList	{ $$ = alloc_member(MEMBER, $1, NULL, NULL); }
 | MethodDeclList MethodDefList	{ $$ = alloc_member(MEMBER, NULL, $1, $2); }
 | MethodDeclList	{ $$ = alloc_member(MEMBER, NULL, $1, NULL); }
 | MethodDefList	{ $$ = alloc_member(MEMBER, NULL, NULL, $1); }
-|	{ $$ = NULL; }
 ;
 
 VarDeclList: VarDecl VarDeclList	{ $$ = change_vardecl_prev($1, $2); }
-|	{ $$ = NULL; }
 ;
 MethodDeclList: FuncDecl MethodDeclList	{ $$ = change_methoddecl_prev($1, $2); }
-|	{ $$ = NULL; }
 ;
 MethodDefList: FuncDef MethodDefList	{ $$ = change_methoddef_prev($1, $2); }
-|	{ $$ = NULL; }
 ;
 
 VarDecl: INT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 1, 0, 0, NULL); }
 | FLOAT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 0, 0, 0, NULL); }
 ;
-FuncDecl: Type ID OPRNTH ParamList CPRNTH SEMICOLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
+FuncDecl: Type ID OPRNTH CPRNTH SEMICOLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, NULL, NULL); }
+| Type ID OPRNTH ParamList CPRNTH SEMICOLON { $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
 ;
-FuncDef: Type ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_methoddef(FUNCDEF, $2, $1, $4, $6, NULL); }
+FuncDef:  Type ID OPRNTH CPRNTH CompoundStmt { $$ = alloc_methoddef(FUNCDEF, $2, $1, NULL, $5, NULL); }
+| Type ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_methoddef(FUNCDEF, $2, $1, $4, $6, NULL); }
 ;
 
-ClassMethodList: ClassMethodDef ClassMethodList	{ $$ = change_classmethoddef_prev($1, $2); }
-|	{ $$ = NULL; }
+ClassMethodList: ClassMethodDef	{ $$ = $1; }
+| ClassMethodDef ClassMethodList	{ $$ = change_classmethoddef_prev($1, $2); }
 ;
 ClassMethodDef: Type ID COLON COLON ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, $7, $9, NULL); }
 | Type ID COLON COLON ID OPRNTH CPRNTH CompoundStmt { $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, NULL, $8, NULL); }
@@ -103,9 +101,8 @@ ClassMethodDef: Type ID COLON COLON ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$
 MainFunc: INT MAIN OPRNTH CPRNTH CompoundStmt	{ $$ = alloc_mainfunc(MAIN, $5); }
 ;
 
-ParamList: Param ParamList	{ $$ = change_param_prev($1, $2); }
-| COMMA Param ParamList	{ $$ = change_param_prev($2, $3); }
-|	{ $$ = NULL; }
+ParamList: Param { $$ = $1; }
+| Param COMMA ParamList	{ $$ = change_param_prev($1, $3); }
 ;
 Param: Type Ident	{ $$ = alloc_param(PARAM, $1, $2, NULL); }
 ;
@@ -123,8 +120,8 @@ CompoundStmt: OBRACE VarDeclList StmtList CBRACE	{ $$ = alloc_compoundstmt(COMPO
 | OBRACE CBRACE	{ $$ = alloc_compoundstmt(COMPOUNDSTMT, NULL, NULL); }
 ;
 
-StmtList: Stmt StmtList	{ $$ = change_stmt_prev($1, $2); }
-|	{ $$ = NULL; }
+StmtList: Stmt	{ $$ = $1; }
+| Stmt StmtList { $$ = change_stmt_prev($1, $2); }
 ;
 
 Stmt: ExprStmt	{ $$ = alloc_stmt(STMT, eExpr, $1, NULL); }
@@ -189,13 +186,12 @@ IdentExpr: ID OBRCK Expr CBRCK	{ $$ = alloc_identexpr(IDENTEXPR, $1, $3); }
 | ID	{ $$ = alloc_identexpr(IDENTEXPR, $1, NULL); }
 ;
 
-CallExpr: ID OPRNTH ArgList CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, $3); }
+CallExpr: ID OPRNTH CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, NULL); }
+| ID OPRNTH ArgList CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, $3); }
 ;
 
 ArgList: Expr	{ $$ = alloc_arg(ARGLIST, $1, NULL); }
-| Expr ArgList	{ $$ = alloc_arg(ARGLIST, $1, $2); }
-| COMMA Expr ArgList	{ $$ = alloc_arg(ARGLIST, $2, $3); }
-| 	{ $$ = NULL; }
+| Expr COMMA ArgList	{ $$ = alloc_arg(ARGLIST, $1, $3); }
 ;
 
 %%
