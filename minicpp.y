@@ -50,7 +50,7 @@ FILE *yyin;
 
 /* rules & actions */
 
-Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); }
+Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
 | ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); }
 | ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); }
 | MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); }
@@ -189,13 +189,13 @@ IdentExpr: ID OBRCK Expr CBRCK	{ $$ = alloc_identexpr(IDENTEXPR, $1, $3); }
 | ID	{ $$ = alloc_identexpr(IDENTEXPR, $1, NULL); }
 ;
 
-CallExpr: ID OPRNTH CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, NULL); }
-| ID OPRNTH ArgList CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, $3); }
+CallExpr: ID OPRNTH ArgList CPRNTH	{ $$ = alloc_callexpr(CALLEXPR, $1, $3); }
 ;
 
 ArgList: Expr	{ $$ = alloc_arg(ARGLIST, $1, NULL); }
 | Expr ArgList	{ $$ = alloc_arg(ARGLIST, $1, $2); }
 | COMMA Expr ArgList	{ $$ = alloc_arg(ARGLIST, $2, $3); }
+| 	{ $$ = NULL; }
 ;
 
 %%
@@ -204,6 +204,8 @@ ArgList: Expr	{ $$ = alloc_arg(ARGLIST, $1, NULL); }
 
 int main(int argc, char* argv[]) {
 	//yyin = fopen(argv[1], "r");
+	extern int yydebug;
+	yydebug = 1;
 	yyparse();
 	//close(yyin);
 	return 0;

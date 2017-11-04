@@ -1,7 +1,7 @@
 #include "AST.h"
 #include "minicpp.tab.h"
 #include <string.h>
-//#include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 void yyerror(char *);
@@ -28,7 +28,7 @@ struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *p
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id, id);
+	strcpy(node->id, id);
 	node->priMember = (struct Member *)priMember;
 	node->pubMember = (struct Member *)pubMember;
 	node->prev = (struct Class *)prev;
@@ -88,7 +88,7 @@ struct ast *alloc_methoddecl(int type, char *id, struct ast *type2, struct ast *
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id, id);
+	strcpy(node->id, id);
 	node->type2 = (struct Type *)type2;
 	node->param = (struct Param *)param;
 	node->prev = (struct MethodDecl *)prev;
@@ -109,7 +109,7 @@ struct ast *alloc_methoddef(int type, char *id, struct ast *type2, struct ast *p
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id, id);
+	strcpy(node->id, id);
 	node->type2 = (struct Type *)type2;
 	node->param = (struct Param *)param;
 	node->compoundStmt = (struct CompoundStmt *)compoundStmt;
@@ -132,8 +132,8 @@ struct ast *alloc_classmethoddef(int type, struct ast *type2, char *className, c
 	}
 	node->type = type;
 	node->type2 = (struct Type *)type2;
-	strcat(node->className, className);
-	strcat(node->methodName, methodName);
+	strcpy(node->className, className);
+	strcpy(node->methodName, methodName);
 	node->param = (struct Param *)param;
 	node->compoundStmt = (struct CompoundStmt *)compoundStmt;
 	node->prev = (struct MethodDef *)prev;
