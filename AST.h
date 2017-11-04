@@ -92,7 +92,7 @@ struct Member {
 // VarDeclList := (VarDecl)+
 // VarDecl := Type Ident (= (intnum|floatnum))? ;
 struct VarDecl {
-	int type1;
+	int type;
 	struct Type *type2;
 	struct Ident *ident;
 	bool isInt;	// true if type of assigner value is int, else false
@@ -106,7 +106,7 @@ struct VarDecl {
 // MethodDeclList := (MethodDecl)+
 // MethodDecl := Type id ( (ParamList)? ) ;
 struct MethodDecl {
-	int type1;
+	int type;
 	char *id;
 	struct Type *type2;
 	struct Param *param;
@@ -116,7 +116,7 @@ struct MethodDecl {
 // MethodDefList := (MethodDef)+
 // MethodDef := Type id ( (ParamList)? ) CompoundStmt
 struct MethodDef {
-	int type1;
+	int type;
 	char *id;
 	struct Type *type2;
 	struct Param *param;
@@ -127,7 +127,7 @@ struct MethodDef {
 // ClassMethodList := (ClassMethodDef)+
 // ClassMethodDef := Type id :: id ( (ParamList)? ) CompoundStmt
 struct ClassMethodDef {
-	int type1;
+	int type;
 	struct Type *type2;
 	char *className;
 	char *methodName;
@@ -145,7 +145,7 @@ struct MainFunc {
 // ParamList := Param (, Param)*
 // Param := Type Ident
 struct Param {
-	int type1;
+	int type;
 	struct Type *type2;
 	struct Ident *ident;
 	struct Param *prev;
@@ -186,7 +186,7 @@ struct CompoundStmt {
 //       | CompoundStmt
 //       | ;
 struct Stmt {
-	int type1;
+	int type;
 	Stmt_e e;
 	union {
 		struct ExprStmt *exprStmt;
@@ -255,13 +255,13 @@ struct IfStmt {
 //       | floatnum
 struct Expr {
 	Expr_e e;
-	int type1;
+	int type;
 	union {
 		struct OperExpr *operExpr;
 		struct RefExpr *refExpr;
 		int intnum;
 		float floatnum;
-	} type;
+	} type2;
 };
 
 // OperExpr := unop Expr
@@ -272,7 +272,7 @@ struct Expr {
 //           | ( Expr )
 struct OperExpr {
 	Oper_e e;
-	int type1;
+	int type;
 	union {
 		struct UnOp *un;
 		struct AddiOp *addi;
@@ -280,18 +280,18 @@ struct OperExpr {
 		struct RelaOp *rela;
 		struct EqltOp *eqlt;
 		struct Expr *bracket;
-	} type;
+	} type2;
 };
 
 // RefExpr := RefVarExpr
 //          | RefCallExpr
 struct RefExpr {
 	Ref_e e;
-	int type1;
+	int type;
 	union {
 		struct RefVarExpr *refVarExpr;
 		struct RefCallExpr *refCallExpr;
-	} type;
+	} type2;
 };
 
 // RefVarExpr := (RefExpr .)? IdentExpr
@@ -371,21 +371,21 @@ struct ast *alloc_program(int type, struct ast *_class, struct ast *classMethodD
 struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *pubMember, struct ast *prev);
 struct ast *change_class_prev(struct ast *_class, struct ast *prev);
 struct ast *alloc_member(int type, struct ast *varDecl, struct ast *methodDecl, struct ast *methodDef);
-struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev);
+struct ast *alloc_vardecl(int type, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev);
 struct ast *change_vardecl_prev(struct ast *varDecl, struct ast *prev);
-struct ast *alloc_methoddecl(int type1, char *id, struct ast *type2, struct ast *param, struct ast *prev);
+struct ast *alloc_methoddecl(int type, char *id, struct ast *type2, struct ast *param, struct ast *prev);
 struct ast *change_methoddecl_prev(struct ast *methodDecl, struct ast *prev);
-struct ast *alloc_methoddef(int type1, char *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev);
+struct ast *alloc_methoddef(int type, char *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev);
 struct ast *change_methoddef_prev(struct ast *methodDef, struct ast *prev);
-struct ast *alloc_classmethoddef(int type1, struct ast *type2, char *className, char *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev);
+struct ast *alloc_classmethoddef(int type, struct ast *type2, char *className, char *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev);
 struct ast *change_classmethoddef_prev(struct ast *classMethodDef, struct ast *prev);
 struct ast *alloc_mainfunc(int type, struct ast *compoundStmt);
-struct ast *alloc_param(int type1, struct ast *type2, struct ast *ident, struct ast *prev);
+struct ast *alloc_param(int type, struct ast *type2, struct ast *ident, struct ast *prev);
 struct ast *change_param_prev(struct ast *param, struct ast *prev);
 struct ast *alloc_ident(int type, char *id, int len);
 struct ast *alloc_type(int type, char *id, Type_e e);
 struct ast *alloc_compoundstmt(int type, struct ast *varDecl, struct ast *stmt);
-struct ast *alloc_stmt(int type1, Stmt_e e, struct ast *stmt, struct ast *prev);
+struct ast *alloc_stmt(int type, Stmt_e e, struct ast *stmt, struct ast *prev);
 struct ast *change_stmt_prev(struct ast *stmt, struct ast *prev);
 
 struct ast *alloc_exprstmt(int type, struct ast* expr);
@@ -395,9 +395,9 @@ struct ast *alloc_whilestmt(int type, struct ast* cond, struct ast* body);
 struct ast *alloc_dostmt(int type, struct ast* cond, struct ast* body);
 struct ast *alloc_forstmt(int type, struct ast* init, struct ast* cond, struct ast* incr,	struct ast* body);
 struct ast *alloc_ifstmt(int type, struct ast* cond, struct ast* ifbody, struct ast* elsebody);
-struct ast *alloc_expr(int type1, Expr_e e, int intnum, float floatnum, struct ast* expr);
-struct ast *alloc_operexpr(int type1, Oper_e e,	struct ast* operexpr, struct ast* expr1, struct ast* expr2);
-struct ast *alloc_refexpr(int type1, Ref_e e, struct ast* ref_Expr);
+struct ast *alloc_expr(int type, Expr_e e, int intnum, float floatnum, struct ast* expr);
+struct ast *alloc_operexpr(int type, Oper_e e,	struct ast* operexpr, struct ast* expr1, struct ast* expr2);
+struct ast *alloc_refexpr(int type, Ref_e e, struct ast* ref_Expr);
 struct ast *alloc_refvarexpr(int type, struct ast* refExpr, struct ast* identExpr);
 struct ast *alloc_refcallexpr(int type, struct ast* refExpr, struct ast* callExpr);
 struct ast *alloc_identexpr(int type, char* id, struct ast* expr);

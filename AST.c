@@ -1,5 +1,5 @@
 #include "AST.h"
-//#include "minicpp.y"
+#include "minicpp.tab.h"
 #include <string.h>
 //#include <stdlib.h>
 #include <stdio.h>
@@ -55,14 +55,14 @@ struct ast *alloc_member(int type, struct ast *varDecl, struct ast *methodDecl, 
 	return (struct ast *)node;
 }
 
-struct ast *alloc_vardecl(int type1, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev)
+struct ast *alloc_vardecl(int type, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev)
 {
 	struct VarDecl *node = malloc(sizeof(struct VarDecl));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	node->type2 = (struct Type *)type2;
 	node->ident = (struct Ident *)ident;
 	node->isInt = isInt;
@@ -80,14 +80,14 @@ struct ast *change_vardecl_prev(struct ast *varDecl, struct ast *prev)
 	return (struct ast *)varDecl;
 }
 
-struct ast *alloc_methoddecl(int type1, char *id, struct ast *type2, struct ast *param, struct ast *prev)
+struct ast *alloc_methoddecl(int type, char *id, struct ast *type2, struct ast *param, struct ast *prev)
 {
 	struct MethodDecl *node = malloc(sizeof(struct MethodDecl));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	strcat(node->id, id);
 	node->type2 = (struct Type *)type2;
 	node->param = (struct Param *)param;
@@ -101,14 +101,14 @@ struct ast *change_methoddecl_prev(struct ast *methodDecl, struct ast *prev)
 	return (struct ast *)methodDecl;
 }
 
-struct ast *alloc_methoddef(int type1, char *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev)
+struct ast *alloc_methoddef(int type, char *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev)
 {
 	struct MethodDef *node = malloc(sizeof(struct MethodDef));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	strcat(node->id, id);
 	node->type2 = (struct Type *)type2;
 	node->param = (struct Param *)param;
@@ -123,14 +123,14 @@ struct ast *change_methoddef_prev(struct ast *methodDef, struct ast *prev)
 	return (struct ast *)methodDef;
 }
 
-struct ast *alloc_classmethoddef(int type1, struct ast *type2, char *className, char *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev)
+struct ast *alloc_classmethoddef(int type, struct ast *type2, char *className, char *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev)
 {
 	struct ClassMethodDef *node = malloc(sizeof(struct ClassMethodDef));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	node->type2 = (struct Type *)type2;
 	strcat(node->className, className);
 	strcat(node->methodName, methodName);
@@ -158,14 +158,14 @@ struct ast *alloc_mainfunc(int type, struct ast *compoundStmt)
 	return (struct ast *)node;
 }
 
-struct ast *alloc_param(int type1, struct ast *type2, struct ast *ident, struct ast *prev)
+struct ast *alloc_param(int type, struct ast *type2, struct ast *ident, struct ast *prev)
 {
 	struct Param *node = malloc(sizeof(struct Param));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	node->type2 = (struct Type *)type2;
 	node->ident = (struct Ident *)ident;
 	node->prev = (struct Param *)prev;
@@ -217,14 +217,14 @@ struct ast *alloc_compoundstmt(int type, struct ast *varDecl, struct ast *stmt)
 	return (struct ast *)node;
 }
 
-struct ast *alloc_stmt(int type1, Stmt_e e, struct ast *stmt, struct ast *prev)
+struct ast *alloc_stmt(int type, Stmt_e e, struct ast *stmt, struct ast *prev)
 {
 	struct Stmt *node = malloc(sizeof(struct Stmt));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	node->e = e;
 	if(e == eExpr)
 		node->type2.exprStmt = (struct ExprStmt *)stmt;
@@ -358,27 +358,27 @@ struct ast *alloc_ifstmt(int type, struct ast* cond, struct ast* ifbody, struct 
 }
 
 //eOper, eRef, eIntnum, eFloatnum
-struct ast *alloc_expr(int type1, Expr_e e, int intnum, float floatnum, struct ast* expr)
+struct ast *alloc_expr(int type, Expr_e e, int intnum, float floatnum, struct ast* expr)
 {
 	struct Expr *node = malloc(sizeof(struct Expr));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	switch(e)
 	{
 	case eOper:
-		node->type.operExpr = (struct OperExpr*)expr;
+		node->type2.operExpr = (struct OperExpr*)expr;
 		break;
 	case eRef:
-		node->type.refExpr = (struct RefExpr*)expr;
+		node->type2.refExpr = (struct RefExpr*)expr;
 		break;
 	case eIntnum:
-		node->type.intnum = intnum;
+		node->type2.intnum = intnum;
 		break;
 	case eFloatnum:
-		node->type.floatnum = floatnum;
+		node->type2.floatnum = floatnum;
 		break;
 	}
 	return (struct ast*)node;
@@ -388,7 +388,7 @@ struct ast *alloc_expr(int type1, Expr_e e, int intnum, float floatnum, struct a
 //eUn, eAddi, eMult, eRela, eEqlt, eBracket
 //미완??????????
 //expr * expr인데 expr 각각할당?
-struct ast *alloc_operexpr(int type1, Oper_e e, 
+struct ast *alloc_operexpr(int type, Oper_e e, 
 			struct ast* operexpr, struct ast* expr1, struct ast* expr2)
 {
 	struct OperExpr *node = malloc(sizeof(struct OperExpr));
@@ -396,58 +396,58 @@ struct ast *alloc_operexpr(int type1, Oper_e e,
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	switch(e)
 	{
 	case eUn:
-		node->type.un = malloc(sizeof(struct UnOp));
-		node->type.un = (struct UnOp*)operexpr;
+		node->type2.un = malloc(sizeof(struct UnOp));
+		node->type2.un = (struct UnOp*)operexpr;
 		break;
 	case eAddi:
-		node->type.addi = malloc(sizeof(struct AddiOp));
-		node->type.addi->lhs=(struct Expr*)expr1;
-		node->type.addi->rhs=(struct Expr*)expr2;
+		node->type2.addi = malloc(sizeof(struct AddiOp));
+		node->type2.addi->lhs=(struct Expr*)expr1;
+		node->type2.addi->rhs=(struct Expr*)expr2;
 		break;
 	case eMult:
-		node->type.mult = malloc(sizeof(struct MultOp));
-		node->type.mult->lhs=(struct Expr*)expr1;
-		node->type.mult->rhs=(struct Expr*)expr2;
+		node->type2.mult = malloc(sizeof(struct MultOp));
+		node->type2.mult->lhs=(struct Expr*)expr1;
+		node->type2.mult->rhs=(struct Expr*)expr2;
 		break;
 	case eRela:
-		node->type.rela = malloc(sizeof(struct RelaOp));
-		node->type.rela->lhs=(struct Expr*)expr1;
-		node->type.rela->rhs=(struct Expr*)expr2;
+		node->type2.rela = malloc(sizeof(struct RelaOp));
+		node->type2.rela->lhs=(struct Expr*)expr1;
+		node->type2.rela->rhs=(struct Expr*)expr2;
 		break;
 	case eEqlt:
-		node->type.eqlt = malloc(sizeof(struct EqltOp));
-		node->type.eqlt->lhs=(struct Expr*)expr1;
-		node->type.eqlt->rhs=(struct Expr*)expr2;
+		node->type2.eqlt = malloc(sizeof(struct EqltOp));
+		node->type2.eqlt->lhs=(struct Expr*)expr1;
+		node->type2.eqlt->rhs=(struct Expr*)expr2;
 		break;
 	case eBracket:
-		node->type.bracket = malloc(sizeof(struct Expr));
-		node->type.bracket=(struct Expr*)expr1;
+		node->type2.bracket = malloc(sizeof(struct Expr));
+		node->type2.bracket=(struct Expr*)expr1;
 		break;	
 	}
 	return (struct ast*)node;
 }
 
 //eVar, eCall
-struct ast *alloc_refexpr(int type1, Ref_e e, struct ast* ref_Expr)
+struct ast *alloc_refexpr(int type, Ref_e e, struct ast* ref_Expr)
 {
 	struct RefExpr *node = malloc(sizeof(struct RefExpr));
 	if(!node) {
 		yyerror("out of space");
 		exit(0);
 	}
-	node->type1 = type1;
+	node->type = type;
 	
 	switch(e)
 	{
 	case eVar: 
-		node->type.refVarExpr=(struct refVarExpr*)ref_Expr;
+		node->type2.refVarExpr=(struct refVarExpr*)ref_Expr;
 		break;
 	case eCall:
-		node->type.refCallExpr=(struct refCallExpr*)ref_Expr;
+		node->type2.refCallExpr=(struct refCallExpr*)ref_Expr;
 		break;
 	}
 	return (struct ast*)node;
@@ -569,7 +569,7 @@ struct ast *get()
 
 void print_ast(struct ast *node)
 {
-	FILE* fp = fopen("./ast.out", "w");
+	FILE* fp = fopen("/home/joobong/Workplace/compiler-project/ast.out", "w");
 	if(fp == NULL)
 	{
 		yyerror("file unopen");
@@ -583,6 +583,7 @@ void print_ast(struct ast *node)
 	while(!empty())
 	{
 		struct ast *current = get();
+		char* id, className, methodName;
 
 		if(parent_count == 0)
 		{
@@ -613,7 +614,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case CLASS:
-				char *id = ((struct Class *)current)->id;
+				strcpy(id, ((struct Class *)current)->id);
 				fprintf(fp, "Class(%s) ", id);
 				if(((struct Class *)current)->priMember != NULL)
 				{
@@ -668,7 +669,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case FUNCDECL:
-				char *id = ((struct MethodDecl *)current)->id;
+				strcpy(id, ((struct MethodDecl *)current)->id);
 				fprintf(fp, "MethodDecl(%s) ", id);
 				if(((struct MethodDecl *)current)->type2 != NULL)
 				{
@@ -687,7 +688,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case FUNCDEF:
-				char *id = ((struct MethodDef *)current)->id;
+				strcpy(id, ((struct MethodDef *)current)->id);
 				fprintf(fp, "MethodDef(%s) ", id);
 				if(((struct MethodDef *)current)->type2 != NULL)
 				{
@@ -711,8 +712,8 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case CLASSMETHODDEF:
-				char *className = ((struct ClassMethodDef *)current)->className;
-				char *methodName = ((struct ClassMethodDef *)current)->methodName;
+				strcpy(className, ((struct ClassMethodDef *)current)->className);
+				strcpy(methodName, ((struct ClassMethodDef *)current)->methodName);
 				fprintf(fp, "ClassMethodDef(%s::%s) ", className, methodName);
 				if(((struct MethodDef *)current)->type2 != NULL)
 				{
@@ -762,7 +763,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case ID:
-				char *id = ((struct Ident *)current)->id;
+				strcpy(id, ((struct Ident *)current)->id);
 				fprintf(fp, "Ident(%s) ", id);
 				break;
 			case TYPE:
@@ -772,7 +773,8 @@ void print_ast(struct ast *node)
 					fprintf(fp, "Type(float) ");
 				else
 				{
-					char *id = ((struct Type *)current)->id;
+					char* id;
+				strcpy(id, ((struct Type *)current)->id);
 					fprintf(fp, "Type(%s) ", id);
 				}
 				break;
@@ -791,37 +793,37 @@ void print_ast(struct ast *node)
 				break;
 			case STMT:
 				fprintf(fp, "Stmt ");
-				if(e == eExpr)
+				if(((struct Stmt *)current)->e == eExpr)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.exprStmt);
 					descendant_count++;
 				}
-				else if(e == eAssign)
+				else if(((struct Stmt *)current)->e == eAssign)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.assignStmt);
 					descendant_count++;
 				}
-				else if(e == eRet)
+				else if(((struct Stmt *)current)->e == eRet)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.retStmt);
 					descendant_count++;
 				}
-				else if(e == eWhile)
+				else if(((struct Stmt *)current)->e == eWhile)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.whileStmt);
 					descendant_count++;
 				}
-				else if(e == eDo)
+				else if(((struct Stmt *)current)->e == eDo)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.doStmt);
 					descendant_count++;
 				}
-				else if(e == eFor)
+				else if(((struct Stmt *)current)->e == eFor)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.forStmt);
 					descendant_count++;
 				}
-				else if(e == eIf)
+				else if(((struct Stmt *)current)->e == eIf)
 				{
 					put((struct ast *)((struct Stmt *)current)->type2.ifStmt);
 					descendant_count++;
@@ -876,115 +878,219 @@ void print_ast(struct ast *node)
 					descendant_count++;
 				}
 			case DO:
-				if(((struct DoStmt*)current)->cond!= NULL)
-					put(((struct DoStmt *)current)->cond);
-				if(((struct DoStmt*)current)->body!= NULL)
+				fprintf(fp, "DoStmt ");
+				if(((struct DoStmt*)current)->cond != NULL)
+				{
+					put((struct ast *)((struct DoStmt *)current)->cond);
+					descendant_count++;
+				}
+				if(((struct DoStmt*)current)->body != NULL)
+				{
 					put(((struct DoStmt *)current)->body);
+					descendant_count++;
+				}
 				break;
 			case FOR:
-				if(((struct ForStmt*)current)->init!= NULL)
-					put(((struct ForStmt *)current)->init);
-				if(((struct ForStmt*)current)->cond!= NULL)
-					put(((struct ForStmt *)current)->cond);
-				if(((struct ForStmt*)current)->incr!= NULL)
-					put(((struct ForStmt *)current)->incr);
-				if(((struct ForStmt*)current)->body!= NULL)
-					put(((struct ForStmt *)current)->body);
+				fprintf(fp, "ForStmt ");
+				if(((struct ForStmt*)current)->init != NULL)
+				{
+					put((struct ast *)((struct ForStmt *)current)->init);
+					descendant_count++;
+				}
+				if(((struct ForStmt*)current)->cond != NULL)
+				{
+					put((struct ast *)((struct ForStmt *)current)->cond);
+					descendant_count++;
+				}
+				if(((struct ForStmt*)current)->incr != NULL)
+				{
+					put((struct ast *)((struct ForStmt *)current)->incr);
+					descendant_count++;
+				}
+				if(((struct ForStmt*)current)->body != NULL)
+				{
+					put((struct ast *)((struct ForStmt *)current)->body);
+					descendant_count++;
+				}
 				break;
 			case IF:
-				if(((struct IfStmt*)current)->cond!= NULL)
-					put(((struct IfStmt *)current)->cond);
-				if(((struct IfStmt*)current)->ifBody!= NULL)
-					put(((struct IfStmt *)current)->ifBody);
-				if(((struct IfStmt*)current)->elseBody!= NULL)
-					put(((struct IfStmt *)current)->elseBody);
+				fprintf(fp, "IfStmt ");
+				if(((struct IfStmt*)current)->cond != NULL)
+				{
+					put((struct ast *)((struct IfStmt *)current)->cond);
+					descendant_count++;
+				}
+				if(((struct IfStmt*)current)->ifBody != NULL)
+				{
+					put((struct ast *)((struct IfStmt *)current)->ifBody);
+					descendant_count++;
+				}
+				if(((struct IfStmt*)current)->elseBody != NULL)
+				{
+					put((struct ast *)((struct IfStmt *)current)->elseBody);
+					descendant_count++;
+				}
 				break;
 			case EXPR:
-			//eOper, eRef, eIntnum, eFloatnum
-				if((struct Expr*)current-> e == eOper)
+				if(((struct Expr*)current)-> e == eOper)
 				{
-					if(((struct Expr*)current)->type.operExpr!= NULL)
-					put(((struct Expr *)current)->operExpr);
+					fprintf(fp, "ExprStmt ");
+					if(((struct Expr*)current)->type2.operExpr != NULL)
+					{
+						put((struct ast *)((struct Expr *)current)->type2.operExpr);
+						descendant_count++;
+					}
 				}
-				else if((struct Expr*)current-> e == eRef)
+				else if(((struct Expr*)current)-> e == eRef)
 				{
-					if(((struct Expr*)current)->type.refExpr!= NULL)
-					put(((struct Expr *)current)->refExpr);
+					fprintf(fp, "ExprStmt ");
+					if(((struct Expr*)current)->type2.refExpr != NULL)
+					{
+						put((struct ast *)((struct Expr *)current)->type2.refExpr);
+						descendant_count++;
+					}
 				}
-				//intnum float	
+				else if(((struct Expr*)current)-> e == eIntnum)
+				{
+					int intnum = ((struct Expr *)current)->type2.intnum;
+					fprintf(fp, "ExprStmt(%d) ", intnum);
+				}
+				else
+				{
+					float floatnum = ((struct Expr *)current)->type2.floatnum;
+					fprintf(fp, "ExprStmt(%f) ", floatnum);
+				}	
 				break;
 			
 			case OPEREXPR:
-			//eUn, eAddi, eMult, eRela, eEqlt, eBracket
-				if((struct OperExpr*)current-> e == eUn)
+				fprintf(fp, "OperExpr ");
+				if(((struct OperExpr*)current)->e == eUn)
 				{
-					if(((struct OperExpr*)current)->type.un!= NULL)
-						put(((struct OperExpr*)current)->type.un);
+					if(((struct OperExpr*)current)->type2.un != NULL)
+					{
+						put((struct ast *)((struct OperExpr*)current)->type2.un);
+						descendant_count++;
+					}
 				}
-				else if((struct OperExpr*)current-> e ==eAddi)
+				else if(((struct OperExpr*)current)->e == eAddi)
 				{
-					if(((struct OperExpr*)current)->type.addi!= NULL)
-						put(((struct OperExpr*)current)->type.addi);
+					if(((struct OperExpr*)current)->type2.addi != NULL)
+					{
+						put((struct ast *)((struct OperExpr*)current)->type2.addi);
+						descendant_count++;
+					}
 				}
-				else if((struct OperExpr*)current-> e ==eMult)
+				else if(((struct OperExpr*)current)->e == eMult)
 				{
-					if(((struct OperExpr*)current)->type.mult!= NULL)
-						put(((struct OperExpr*)current)->type.mult);
+					if(((struct OperExpr*)current)->type2.mult != NULL)
+					{
+						put((struct ast *)((struct OperExpr*)current)->type2.mult);
+						descendant_count++;
+					}
 				}
-				else if((struct OperExpr*)current-> e ==eRela)
+				else if(((struct OperExpr*)current)->e == eRela)
 				{
-					if(((struct OperExpr*)current)->type.rela!= NULL)
-						put(((struct OperExpr*)current)->type.rela);
+					if(((struct OperExpr*)current)->type2.rela != NULL)
+					{
+						put((struct ast *)((struct OperExpr*)current)->type2.rela);
+						descendant_count++;
+					}
 				}
-				else if((struct OperExpr*)current-> e ==eEqlt)
+				else if(((struct OperExpr*)current)->e == eEqlt)
 				{
-					if(((struct OperExpr*)current)->type.eqlt!= NULL)
-						put(((struct OperExpr*)current)->eqlt);			
+					if(((struct OperExpr*)current)->type2.eqlt != NULL)
+					{
+						put((struct ast *)((struct OperExpr*)current)->type2.eqlt);
+						descendant_count++;		
+					}
 				}
 				else
 				{
-					if(((struct OperExpr*)current)->type.bracket!= NULL)
-						put(((struct OperExpr*)current)->bracket);			
+					if(((struct OperExpr*)current)->type2.bracket != NULL)
+					{
+						put((struct ast *)((struct OperExpr*)current)->type2.bracket);
+						descendant_count++;		
+					}
 				}
 				break;
 			case REFEXPR:
-				if((struct RefExpr*)current-> e == eVar)
+				fprintf(fp, "RefStmt ");
+				if(((struct RefExpr*)current)-> e == eVar)
 				{
-					if(((struct RefExpr*)current)->refExpr!= NULL)
-						put(((struct RefExpr*)current)->refExpr);
+					if(((struct RefExpr*)current)->type2.refVarExpr != NULL)
+					{
+						put((struct ast *)((struct RefExpr*)current)->type2.refVarExpr);
+						descendant_count++;
+					}
 				}
 				else
 				{
-					if(((struct RefExpr*)current)->identExpr!= NULL)
-						put(((struct RefExpr*)current)->identExpr);
+					if(((struct RefExpr*)current)->type2.refCallExpr != NULL)
+					{
+						put((struct ast *)((struct RefExpr*)current)->type2.refCallExpr);
+						descendant_count++;
+					}
 				}
 				break;
 			case REFVAREXPR:
-				if(((struct RefVarExpr*)current)->refExpr!= NULL)
-					put(((struct RefVarExpr *)current)->refExpr);
-				if(((struct RefVarExpr*)current)->identExpr!= NULL)
-					put(((struct RefVarExpr *)current)->identExpr);
+				fprintf(fp, "RefVarStmt ");
+				if(((struct RefVarExpr*)current)->refExpr != NULL)
+				{
+					put((struct ast *)((struct RefVarExpr *)current)->refExpr);
+					descendant_count++;
+				}
+				if(((struct RefVarExpr*)current)->identExpr != NULL)
+				{
+					put((struct ast *)((struct RefVarExpr *)current)->identExpr);
+					descendant_count++;
+				}
 				break;
 			case REFCALLEXPR:
-				if(((struct RefCallExpr*)current)->refExpr!= NULL)
-					put(((struct RefCallExpr *)current)->refExpr);
-				if(((struct RefCallExpr*)current)->callExpr!= NULL)
-					put(((struct RefCallExpr *)current)->callExpr);
+				fprintf(fp, "RefCallStmt ");
+				if(((struct RefCallExpr*)current)->refExpr != NULL)
+				{
+					put((struct ast *)((struct RefCallExpr *)current)->refExpr);
+					descendant_count++;
+				}
+				if(((struct RefCallExpr*)current)->callExpr != NULL)
+				{
+					put((struct ast *)((struct RefCallExpr *)current)->callExpr);
+					descendant_count++;
+				}
 				break;
 			case IDENTEXPR:
-				if(((struct IdentExpr*)current)->expr!= NULL)
-					put(((struct IdentExpr*)current)->expr);
+				strcpy(id, ((struct IdentExpr *)current)->id);
+				fprintf(fp, "IdentExpr(%s) ", id);
+				if(((struct IdentExpr*)current)->expr != NULL)
+				{
+					put((struct ast *)((struct IdentExpr*)current)->expr);
+					descendant_count++;
+				}
 				break;
 			case CALLEXPR:
-				if(((struct CallExpr*)current)->arg!= NULL)
-					put(((struct CallExpr*)current)->arg);
-				break
-			case ARGLIST:
-				if(((struct Arg *)current)->expr!= NULL)
-					put(((struct Arg *)current)->expr);
-				if(((struct Arg *)current)->prev!= NULL)
-					put(((struct Arg *)current)->prev);
+				strcpy(id, ((struct CallExpr *)current)->id);
+				fprintf(fp, "CallExpr(%s) ", id);
+				if(((struct CallExpr*)current)->arg != NULL)
+				{
+					put((struct ast *)((struct CallExpr*)current)->arg);
+					descendant_count++;
+				}
 				break;
+			case ARGLIST:
+				fprintf(fp, "Arg ");
+				if(((struct Arg *)current)->expr != NULL)
+				{
+					put((struct ast *)((struct Arg *)current)->expr);
+					descendant_count++;
+				}
+				if(((struct Arg *)current)->prev != NULL)
+				{
+					put((struct ast *)((struct Arg *)current)->prev);
+					descendant_count++;
+				}
+				break;
+			default:
+				yyerror("wrong input into print");
 		}
 	}
 

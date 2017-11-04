@@ -160,34 +160,22 @@ IfStmt: IF OPRNTH Expr CPRNTH Stmt EL Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, $7); 
 | IF OPRNTH Expr CPRNTH Stmt	{ $$ = alloc_ifstmt(IF, $3, $5, NULL); }
 ;
 
-Expr: OperExpr	{ Expr_e e = eOper;
-$$ = alloc_expr(EXPR, e, 0, 0, $1); }
-| RefExpr	{ Expr_e e = eRef;
-$$ = alloc_expr(EXPR, e, 0, 0, $1); }
-| INTNUM	{ Expr_e e = eIntnum;
-$$ = alloc_expr(EXPR, e, $1, 0, NULL); }
-| FLOATNUM	{ Expr_e e = eFloatnum;
-$$ = alloc_expr(EXPR, e, $1, 0, NULL); }
+Expr: OperExpr	{ $$ = alloc_expr(EXPR, eOper, 0, 0, $1); }
+| RefExpr	{ $$ = alloc_expr(EXPR, eRef, 0, 0, $1); }
+| INTNUM	{ $$ = alloc_expr(EXPR, eIntnum, $1, 0, NULL); }
+| FLOATNUM	{ $$ = alloc_expr(EXPR, eFloatnum, 0, $1, NULL); }
 ;
 
-OperExpr: UNOP Expr	{ Oper_e e = eUn;
-$$ = alloc_operexpr(OPEREXPR, e, $2, NULL, NULL); }
-| Expr ADDIOP Expr	{ Oper_e e = eAddi;
-$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| Expr MULTOP Expr	{ Oper_e e = eMult;
-$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| Expr RELAOP Expr	{ Oper_e e = eRela;
-$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| Expr EQLTOP Expr	{ Oper_e e = eEqlt;
-$$ = alloc_operexpr(OPEREXPR, e, NULL, $1, $3); }
-| OPRNTH Expr CPRNTH	{ Oper_e e = eBracket;
-$$ = alloc_operexpr(OPEREXPR, e, NULL, $2, NULL); }
+OperExpr: UNOP Expr	{ $$ = alloc_operexpr(OPEREXPR, eUn, $2, NULL, NULL); }
+| Expr ADDIOP Expr	{ $$ = alloc_operexpr(OPEREXPR, eAddi, NULL, $1, $3); }
+| Expr MULTOP Expr	{ $$ = alloc_operexpr(OPEREXPR, eMult, NULL, $1, $3); }
+| Expr RELAOP Expr	{ $$ = alloc_operexpr(OPEREXPR, eRela, NULL, $1, $3); }
+| Expr EQLTOP Expr	{ $$ = alloc_operexpr(OPEREXPR, eEqlt, NULL, $1, $3); }
+| OPRNTH Expr CPRNTH	{ $$ = alloc_operexpr(OPEREXPR, eBracket, $2, NULL, NULL); }
 ;
 
-RefExpr: RefVarExpr	{ Ref_e e = eVar;
-$$ = alloc_refexpr(REFEXPR, e, $1); }
-| RefCallExpr	{ Ref_e e = eCall;
-$$ = alloc_refexpr(REFEXPR, e, $1); }
+RefExpr: RefVarExpr	{ $$ = alloc_refexpr(REFEXPR, eVar, $1); }
+| RefCallExpr	{ $$ = alloc_refexpr(REFEXPR, eCall, $1); }
 ;
 
 RefVarExpr: RefExpr DOT IdentExpr	{ $$ = alloc_refvarexpr(REFVAREXPR, $1, $3); }

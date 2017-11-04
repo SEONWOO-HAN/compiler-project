@@ -501,9 +501,9 @@ static const yytype_uint8 yyrline[] =
       96,    97,    99,   100,   103,   106,   107,   108,   110,   113,
      114,   116,   117,   118,   121,   122,   123,   126,   127,   130,
      131,   132,   133,   134,   135,   136,   137,   140,   143,   146,
-     147,   150,   153,   156,   159,   160,   163,   165,   167,   169,
-     173,   175,   177,   179,   181,   183,   187,   189,   193,   194,
-     197,   198,   200,   201,   204,   205,   208,   209,   210
+     147,   150,   153,   156,   159,   160,   163,   164,   165,   166,
+     169,   170,   171,   172,   173,   174,   177,   178,   181,   182,
+     185,   186,   188,   189,   192,   193,   196,   197,   198
 };
 #endif
 
@@ -1805,156 +1805,144 @@ yyreduce:
 
   case 66:
 #line 163 "minicpp.y" /* yacc.c:1646  */
-    { Expr_e e = eOper;
-(yyval.node) = alloc_expr(EXPR, e, 0, 0, (yyvsp[0].node)); }
-#line 1811 "minicpp.tab.c" /* yacc.c:1646  */
+    { (yyval.node) = alloc_expr(EXPR, eOper, 0, 0, (yyvsp[0].node)); }
+#line 1810 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 165 "minicpp.y" /* yacc.c:1646  */
-    { Expr_e e = eRef;
-(yyval.node) = alloc_expr(EXPR, e, 0, 0, (yyvsp[0].node)); }
-#line 1818 "minicpp.tab.c" /* yacc.c:1646  */
+#line 164 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_expr(EXPR, eRef, 0, 0, (yyvsp[0].node)); }
+#line 1816 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 167 "minicpp.y" /* yacc.c:1646  */
-    { Expr_e e = eIntnum;
-(yyval.node) = alloc_expr(EXPR, e, (yyvsp[0].int_val), 0, NULL); }
-#line 1825 "minicpp.tab.c" /* yacc.c:1646  */
+#line 165 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_expr(EXPR, eIntnum, (yyvsp[0].int_val), 0, NULL); }
+#line 1822 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 169 "minicpp.y" /* yacc.c:1646  */
-    { Expr_e e = eFloatnum;
-(yyval.node) = alloc_expr(EXPR, e, (yyvsp[0].float_val), 0, NULL); }
-#line 1832 "minicpp.tab.c" /* yacc.c:1646  */
+#line 166 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_expr(EXPR, eFloatnum, 0, (yyvsp[0].float_val), NULL); }
+#line 1828 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 173 "minicpp.y" /* yacc.c:1646  */
-    { Oper_e e = eUn;
-(yyval.node) = alloc_operexpr(OPEREXPR, e, (yyvsp[0].node), NULL, NULL); }
-#line 1839 "minicpp.tab.c" /* yacc.c:1646  */
+#line 169 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_operexpr(OPEREXPR, eUn, (yyvsp[0].node), NULL, NULL); }
+#line 1834 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 175 "minicpp.y" /* yacc.c:1646  */
-    { Oper_e e = eAddi;
-(yyval.node) = alloc_operexpr(OPEREXPR, e, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1846 "minicpp.tab.c" /* yacc.c:1646  */
+#line 170 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_operexpr(OPEREXPR, eAddi, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1840 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 177 "minicpp.y" /* yacc.c:1646  */
-    { Oper_e e = eMult;
-(yyval.node) = alloc_operexpr(OPEREXPR, e, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1853 "minicpp.tab.c" /* yacc.c:1646  */
+#line 171 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_operexpr(OPEREXPR, eMult, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1846 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 179 "minicpp.y" /* yacc.c:1646  */
-    { Oper_e e = eRela;
-(yyval.node) = alloc_operexpr(OPEREXPR, e, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1860 "minicpp.tab.c" /* yacc.c:1646  */
+#line 172 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_operexpr(OPEREXPR, eRela, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1852 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 181 "minicpp.y" /* yacc.c:1646  */
-    { Oper_e e = eEqlt;
-(yyval.node) = alloc_operexpr(OPEREXPR, e, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1867 "minicpp.tab.c" /* yacc.c:1646  */
+#line 173 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_operexpr(OPEREXPR, eEqlt, NULL, (yyvsp[-2].node), (yyvsp[0].node)); }
+#line 1858 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 183 "minicpp.y" /* yacc.c:1646  */
-    { Oper_e e = eBracket;
-(yyval.node) = alloc_operexpr(OPEREXPR, e, NULL, (yyvsp[-1].node), NULL); }
-#line 1874 "minicpp.tab.c" /* yacc.c:1646  */
+#line 174 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_operexpr(OPEREXPR, eBracket, (yyvsp[-1].node), NULL, NULL); }
+#line 1864 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 187 "minicpp.y" /* yacc.c:1646  */
-    { Ref_e e = eVar;
-(yyval.node) = alloc_refexpr(REFEXPR, e, (yyvsp[0].node)); }
-#line 1881 "minicpp.tab.c" /* yacc.c:1646  */
+#line 177 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_refexpr(REFEXPR, eVar, (yyvsp[0].node)); }
+#line 1870 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 189 "minicpp.y" /* yacc.c:1646  */
-    { Ref_e e = eCall;
-(yyval.node) = alloc_refexpr(REFEXPR, e, (yyvsp[0].node)); }
-#line 1888 "minicpp.tab.c" /* yacc.c:1646  */
+#line 178 "minicpp.y" /* yacc.c:1646  */
+    { (yyval.node) = alloc_refexpr(REFEXPR, eCall, (yyvsp[0].node)); }
+#line 1876 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 193 "minicpp.y" /* yacc.c:1646  */
+#line 181 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_refvarexpr(REFVAREXPR, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1894 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1882 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 194 "minicpp.y" /* yacc.c:1646  */
+#line 182 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_refvarexpr(REFCALLEXPR, NULL, (yyvsp[0].node)); }
-#line 1900 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1888 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 197 "minicpp.y" /* yacc.c:1646  */
+#line 185 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_refcallexpr(REFCALLEXPR, (yyvsp[-2].node), (yyvsp[0].node)); }
-#line 1906 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1894 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 198 "minicpp.y" /* yacc.c:1646  */
+#line 186 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_refcallexpr(REFCALLEXPR, NULL, (yyvsp[0].node)); }
-#line 1912 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1900 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 200 "minicpp.y" /* yacc.c:1646  */
+#line 188 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_identexpr(IDENTEXPR, (yyvsp[-3].id_val), (yyvsp[-1].node)); }
-#line 1918 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1906 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 201 "minicpp.y" /* yacc.c:1646  */
+#line 189 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_identexpr(IDENTEXPR, (yyvsp[0].id_val), NULL); }
-#line 1924 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1912 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 204 "minicpp.y" /* yacc.c:1646  */
+#line 192 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_callexpr(CALLEXPR, (yyvsp[-2].id_val), NULL); }
-#line 1930 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1918 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 205 "minicpp.y" /* yacc.c:1646  */
+#line 193 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_callexpr(CALLEXPR, (yyvsp[-3].id_val), (yyvsp[-1].node)); }
-#line 1936 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1924 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 208 "minicpp.y" /* yacc.c:1646  */
+#line 196 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_arg(ARGLIST, (yyvsp[0].node), NULL); }
-#line 1942 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1930 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 209 "minicpp.y" /* yacc.c:1646  */
+#line 197 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_arg(ARGLIST, (yyvsp[-1].node), (yyvsp[0].node)); }
-#line 1948 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1936 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 210 "minicpp.y" /* yacc.c:1646  */
+#line 198 "minicpp.y" /* yacc.c:1646  */
     { (yyval.node) = alloc_arg(ARGLIST, (yyvsp[-1].node), (yyvsp[0].node)); }
-#line 1954 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1942 "minicpp.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1958 "minicpp.tab.c" /* yacc.c:1646  */
+#line 1946 "minicpp.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2182,7 +2170,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 213 "minicpp.y" /* yacc.c:1906  */
+#line 201 "minicpp.y" /* yacc.c:1906  */
 
 
 /* C code */
