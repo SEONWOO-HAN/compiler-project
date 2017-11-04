@@ -17,6 +17,8 @@ typedef char bool;
 #define true 1
 #define false 0
 
+#include <stdio.h>
+
 /**
  * Before you started..
  *
@@ -373,11 +375,11 @@ struct ast *change_class_prev(struct ast *_class, struct ast *prev);
 struct ast *alloc_member(int type, struct ast *varDecl, struct ast *methodDecl, struct ast *methodDef);
 struct ast *alloc_vardecl(int type, struct ast *type2, struct ast *ident, bool isInt, int intnum, float floatnum, struct ast *prev);
 struct ast *change_vardecl_prev(struct ast *varDecl, struct ast *prev);
-struct ast *alloc_methoddecl(int type, char *id, struct ast *type2, struct ast *param, struct ast *prev);
+struct ast *alloc_methoddecl(int type, struct ast *id, struct ast *type2, struct ast *param, struct ast *prev);
 struct ast *change_methoddecl_prev(struct ast *methodDecl, struct ast *prev);
-struct ast *alloc_methoddef(int type, char *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev);
+struct ast *alloc_methoddef(int type, struct ast *id, struct ast *type2, struct ast *param, struct ast *compoundStmt, struct ast *prev);
 struct ast *change_methoddef_prev(struct ast *methodDef, struct ast *prev);
-struct ast *alloc_classmethoddef(int type, struct ast *type2, char *className, char *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev);
+struct ast *alloc_classmethoddef(int type, struct ast *type2, struct ast *className, struct ast *methodName, struct ast *param, struct ast *compoundStmt, struct ast *prev);
 struct ast *change_classmethoddef_prev(struct ast *classMethodDef, struct ast *prev);
 struct ast *alloc_mainfunc(int type, struct ast *compoundStmt);
 struct ast *alloc_param(int type, struct ast *type2, struct ast *ident, struct ast *prev);
@@ -406,6 +408,8 @@ struct ast *alloc_arg(int type, struct ast* expr, struct ast* prev);
 struct ast *change_arg_prev(struct ast *arg, struct ast *prev);
 
 void print_ast(struct ast *);
+void print_symbol_table(struct ast *);
+void print_symbol_table_recursion(int count, char *, struct ast *, FILE *);
 //void free_ast(struct ast *);
 
 #endif

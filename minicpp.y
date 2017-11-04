@@ -53,10 +53,10 @@ FILE *yyin;
 
 /* rules & actions */
 
-Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
-| ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); }
-| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); }
-| MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
+Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); print_symbol_table($$); }
+| ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); print_symbol_table($$); }
+| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); print_symbol_table($$); }
+| MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); print_symbol_table($$); }
 ;
 
 ClassList: Class	{ $$ = $1; }
@@ -90,18 +90,18 @@ MethodDefList: FuncDef	{ $$ = $1; }
 VarDecl: INT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 1, 0, 0, NULL); }
 | FLOAT Ident SEMICOLON	{ $$ = alloc_vardecl(VARIABLE, NULL, $2, 0, 0, 0, NULL); }
 ;
-FuncDecl: Type ID OPRNTH CPRNTH SEMICOLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, NULL, NULL); }
-| Type ID OPRNTH ParamList CPRNTH SEMICOLON { $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
+FuncDecl: Type Ident OPRNTH CPRNTH SEMICOLON	{ $$ = alloc_methoddecl(FUNCDECL, $2, $1, NULL, NULL); }
+| Type Ident OPRNTH ParamList CPRNTH SEMICOLON { $$ = alloc_methoddecl(FUNCDECL, $2, $1, $4, NULL); }
 ;
-FuncDef:  Type ID OPRNTH CPRNTH CompoundStmt { $$ = alloc_methoddef(FUNCDEF, $2, $1, NULL, $5, NULL); }
-| Type ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_methoddef(FUNCDEF, $2, $1, $4, $6, NULL); }
+FuncDef:  Type Ident OPRNTH CPRNTH CompoundStmt { $$ = alloc_methoddef(FUNCDEF, $2, $1, NULL, $5, NULL); }
+| Type Ident OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_methoddef(FUNCDEF, $2, $1, $4, $6, NULL); }
 ;
 
 ClassMethodList: ClassMethodDef	{ $$ = $1; }
 | ClassMethodDef ClassMethodList	{ $$ = change_classmethoddef_prev($1, $2); }
 ;
-ClassMethodDef: Type ID COLON COLON ID OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, $7, $9, NULL); }
-| Type ID COLON COLON ID OPRNTH CPRNTH CompoundStmt { $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, NULL, $8, NULL); }
+ClassMethodDef: Type Ident COLON COLON Ident OPRNTH ParamList CPRNTH CompoundStmt	{ $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, $7, $9, NULL); }
+| Type Ident COLON COLON Ident OPRNTH CPRNTH CompoundStmt { $$ = alloc_classmethoddef(CLASSMETHODDEF, $1, $2, $5, NULL, $8, NULL); }
 ;
 
 MainFunc: INT MAIN OPRNTH CPRNTH CompoundStmt	{ $$ = alloc_mainfunc(MAIN, $5); }

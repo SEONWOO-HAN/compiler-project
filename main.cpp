@@ -1,6 +1,14 @@
+class a
+{
+private:
+	int variable1;
+public:
+	float variable2;
+}
+
 int main()
 {
-	int i ;
-	i == 7 ;
-	return 0 ;
+	int variable4;
+	i == 7;
+	return 0;
 }

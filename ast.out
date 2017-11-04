@@ -1,6 +1,6 @@
 Program 
-MainFunc 
-CompoundStmt 
-VarDecl Stmt 
-Ident(i) ExprStmt Stmt 
+Class(a) MainFunc 
+Member Member CompoundStmt 
+VarDecl VarDecl VarDecl Stmt 
+Ident(variable1) Ident(variable2) Ident(variable4) ExprStmt Stmt 
 RetStmt 
