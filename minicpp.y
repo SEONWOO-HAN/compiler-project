@@ -14,6 +14,8 @@ FILE *yyin;
 
 %}
 
+%error-verbose
+
 %union{
 	struct ast *node;
 	char *id_val;
@@ -21,6 +23,7 @@ FILE *yyin;
 	float float_val;
 }
 
+%token END
 %token CLASS PRIVATE PUBLIC MAIN RETURN WHILE DO FOR IF EL
 %token OBRACE CBRACE OPRNTH CPRNTH OBRCK CBRCK SEMICOLON COLON
 %token INT FLOAT
@@ -50,10 +53,10 @@ FILE *yyin;
 
 /* rules & actions */
 
-Program: ClassList MainFunc	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
-| ClassList ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); }
-| ClassMethodList MainFunc	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); }
-| MainFunc	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
+Program: ClassList MainFunc END	{ $$ = alloc_program(PROGRAM, $1, NULL, $2); print_ast($$); }
+| ClassList ClassMethodList MainFunc END	{ $$ = alloc_program(PROGRAM, $1, $2, $3); print_ast($$); }
+| ClassMethodList MainFunc END	{ $$ = alloc_program(PROGRAM, NULL, $1, $2); print_ast($$); }
+| MainFunc END	{ $$ = alloc_program(PROGRAM, NULL, NULL, $1); print_ast($$); }
 ;
 
 ClassList: Class ClassList	{ $$ = change_class_prev($1, $2); }
@@ -199,11 +202,11 @@ ArgList: Expr	{ $$ = alloc_arg(ARGLIST, $1, NULL); }
 /* C code */
 
 int main(int argc, char* argv[]) {
-	//yyin = fopen(argv[1], "r");
+	yyin = fopen(argv[1], "r");
 	extern int yydebug;
 	yydebug = 1;
 	yyparse();
-	//close(yyin);
+	close(yyin);
 	return 0;
 }
 

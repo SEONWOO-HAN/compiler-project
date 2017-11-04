@@ -45,56 +45,57 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    CLASS = 258,
-    PRIVATE = 259,
-    PUBLIC = 260,
-    MAIN = 261,
-    RETURN = 262,
-    WHILE = 263,
-    DO = 264,
-    FOR = 265,
-    IF = 266,
-    EL = 267,
-    OBRACE = 268,
-    CBRACE = 269,
-    OPRNTH = 270,
-    CPRNTH = 271,
-    OBRCK = 272,
-    CBRCK = 273,
-    SEMICOLON = 274,
-    COLON = 275,
-    INT = 276,
-    FLOAT = 277,
-    FLOATNUM = 278,
-    INTNUM = 279,
-    ID = 280,
-    RELAOP = 281,
-    EQLTOP = 282,
-    ADDIOP = 283,
-    MULTOP = 284,
-    ASSIGNMENT = 285,
-    UNOP = 286,
-    DOT = 287,
-    COMMA = 288,
-    PROGRAM = 289,
-    MEMBER = 290,
-    VARIABLE = 291,
-    FUNCDECL = 292,
-    FUNCDEF = 293,
-    CLASSMETHODDEF = 294,
-    PARAM = 295,
-    TYPE = 296,
-    COMPOUNDSTMT = 297,
-    STMT = 298,
-    EXPRSTMT = 299,
-    EXPR = 300,
-    OPEREXPR = 301,
-    REFEXPR = 302,
-    REFVAREXPR = 303,
-    REFCALLEXPR = 304,
-    IDENTEXPR = 305,
-    CALLEXPR = 306,
-    ARGLIST = 307
+    END = 258,
+    CLASS = 259,
+    PRIVATE = 260,
+    PUBLIC = 261,
+    MAIN = 262,
+    RETURN = 263,
+    WHILE = 264,
+    DO = 265,
+    FOR = 266,
+    IF = 267,
+    EL = 268,
+    OBRACE = 269,
+    CBRACE = 270,
+    OPRNTH = 271,
+    CPRNTH = 272,
+    OBRCK = 273,
+    CBRCK = 274,
+    SEMICOLON = 275,
+    COLON = 276,
+    INT = 277,
+    FLOAT = 278,
+    FLOATNUM = 279,
+    INTNUM = 280,
+    ID = 281,
+    RELAOP = 282,
+    EQLTOP = 283,
+    ADDIOP = 284,
+    MULTOP = 285,
+    ASSIGNMENT = 286,
+    UNOP = 287,
+    DOT = 288,
+    COMMA = 289,
+    PROGRAM = 290,
+    MEMBER = 291,
+    VARIABLE = 292,
+    FUNCDECL = 293,
+    FUNCDEF = 294,
+    CLASSMETHODDEF = 295,
+    PARAM = 296,
+    TYPE = 297,
+    COMPOUNDSTMT = 298,
+    STMT = 299,
+    EXPRSTMT = 300,
+    EXPR = 301,
+    OPEREXPR = 302,
+    REFEXPR = 303,
+    REFVAREXPR = 304,
+    REFCALLEXPR = 305,
+    IDENTEXPR = 306,
+    CALLEXPR = 307,
+    ARGLIST = 308
   };
 #endif
 
@@ -103,14 +104,14 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 17 "minicpp.y" /* yacc.c:1909  */
+#line 19 "minicpp.y" /* yacc.c:1909  */
 
 	struct ast *node;
 	char *id_val;
 	int int_val;
 	float float_val;
 
-#line 114 "minicpp.tab.h" /* yacc.c:1909  */
+#line 115 "minicpp.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

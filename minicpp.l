@@ -24,6 +24,7 @@ ID		[A-Za-z_][A-Za-z0-9_]*
 [\t]		{}
 \n		{}
 " "	{}
+<<EOF>>	{return END;}
 
 "class"		{return CLASS;}
 "private"	{return PRIVATE;}

@@ -569,7 +569,7 @@ struct ast *get()
 
 void print_ast(struct ast *node)
 {
-	FILE* fp = fopen("/home/joobong/Workplace/compiler-project/ast.out", "w");
+	FILE* fp = fopen("./ast.out", "w");
 	if(fp == NULL)
 	{
 		yyerror("file unopen");
