@@ -28,7 +28,7 @@ struct ast *alloc_class(int type, char *id, struct ast *priMember, struct ast *p
 		exit(0);
 	}
 	node->type = type;
-	strcpy(node->id, id);
+	node->id = strdup(id);
 	node->priMember = (struct Member *)priMember;
 	node->pubMember = (struct Member *)pubMember;
 	node->prev = (struct Class *)prev;
@@ -88,7 +88,7 @@ struct ast *alloc_methoddecl(int type, char *id, struct ast *type2, struct ast *
 		exit(0);
 	}
 	node->type = type;
-	strcpy(node->id, id);
+	node->id = strdup(id);
 	node->type2 = (struct Type *)type2;
 	node->param = (struct Param *)param;
 	node->prev = (struct MethodDecl *)prev;
@@ -109,7 +109,7 @@ struct ast *alloc_methoddef(int type, char *id, struct ast *type2, struct ast *p
 		exit(0);
 	}
 	node->type = type;
-	strcpy(node->id, id);
+	node->id = strdup(id);
 	node->type2 = (struct Type *)type2;
 	node->param = (struct Param *)param;
 	node->compoundStmt = (struct CompoundStmt *)compoundStmt;
@@ -132,8 +132,8 @@ struct ast *alloc_classmethoddef(int type, struct ast *type2, char *className, c
 	}
 	node->type = type;
 	node->type2 = (struct Type *)type2;
-	strcpy(node->className, className);
-	strcpy(node->methodName, methodName);
+	node->className = strdup(className);
+	node->methodName = strdup(methodName);
 	node->param = (struct Param *)param;
 	node->compoundStmt = (struct CompoundStmt *)compoundStmt;
 	node->prev = (struct MethodDef *)prev;
@@ -186,7 +186,7 @@ struct ast *alloc_ident(int type, char *id, int len)
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id, id);
+	node->id = strdup(id);
 	node->len = len;
 	return (struct ast *)node;
 }
@@ -199,7 +199,7 @@ struct ast *alloc_type(int type, char *id, Type_e e)
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id, id);
+	node->id = strdup(id);
 	node->e = e;
 	return (struct ast *)node;
 }
@@ -487,7 +487,7 @@ struct ast *alloc_identexpr(int type, char* id, struct ast* expr)
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id,id);
+	node->id = strdup(id);
 	node->expr = (struct Expr*)expr;
 	return (struct ast*)node;
 }
@@ -500,7 +500,7 @@ struct ast *alloc_callexpr(int type, char* id, struct ast* arg)
 		exit(0);
 	}
 	node->type = type;
-	strcat(node->id,id);
+	node->id = strdup(id);
 	node->arg = (struct Arg*)arg;
 	return (struct ast*)node;
 }
@@ -614,7 +614,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case CLASS:
-				strcpy(id, ((struct Class *)current)->id);
+				id =  strdup(((struct Class *)current)->id);
 				fprintf(fp, "Class(%s) ", id);
 				if(((struct Class *)current)->priMember != NULL)
 				{
@@ -669,7 +669,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case FUNCDECL:
-				strcpy(id, ((struct MethodDecl *)current)->id);
+				id = strdup(((struct MethodDecl *)current)->id);
 				fprintf(fp, "MethodDecl(%s) ", id);
 				if(((struct MethodDecl *)current)->type2 != NULL)
 				{
@@ -688,7 +688,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case FUNCDEF:
-				strcpy(id, ((struct MethodDef *)current)->id);
+				id = strdup(((struct MethodDef *)current)->id);
 				fprintf(fp, "MethodDef(%s) ", id);
 				if(((struct MethodDef *)current)->type2 != NULL)
 				{
@@ -712,8 +712,8 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case CLASSMETHODDEF:
-				strcpy(className, ((struct ClassMethodDef *)current)->className);
-				strcpy(methodName, ((struct ClassMethodDef *)current)->methodName);
+				className = strdup(((struct ClassMethodDef *)current)->className);
+				methodName = strdup(((struct ClassMethodDef *)current)->methodName);
 				fprintf(fp, "ClassMethodDef(%s::%s) ", className, methodName);
 				if(((struct MethodDef *)current)->type2 != NULL)
 				{
@@ -763,7 +763,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case ID:
-				strcpy(id, ((struct Ident *)current)->id);
+				id = strdup(((struct Ident *)current)->id);
 				fprintf(fp, "Ident(%s) ", id);
 				break;
 			case TYPE:
@@ -774,7 +774,7 @@ void print_ast(struct ast *node)
 				else
 				{
 					char* id;
-				strcpy(id, ((struct Type *)current)->id);
+				id = strdup(((struct Type *)current)->id);
 					fprintf(fp, "Type(%s) ", id);
 				}
 				break;
@@ -1059,7 +1059,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case IDENTEXPR:
-				strcpy(id, ((struct IdentExpr *)current)->id);
+				id = strdup(((struct IdentExpr *)current)->id);
 				fprintf(fp, "IdentExpr(%s) ", id);
 				if(((struct IdentExpr*)current)->expr != NULL)
 				{
@@ -1068,7 +1068,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case CALLEXPR:
-				strcpy(id, ((struct CallExpr *)current)->id);
+				id = strdup(((struct CallExpr *)current)->id);
 				fprintf(fp, "CallExpr(%s) ", id);
 				if(((struct CallExpr*)current)->arg != NULL)
 				{
