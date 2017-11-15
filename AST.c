@@ -369,16 +369,16 @@ struct ast *alloc_expr(int type, Expr_e e, int intnum, float floatnum, struct as
 	switch(e)
 	{
 	case eOper:
-		node->type2.operExpr = (struct OperExpr*)expr;
+		(node->type2).operExpr = (struct OperExpr*)expr;
 		break;
 	case eRef:
-		node->type2.refExpr = (struct RefExpr*)expr;
+		(node->type2).refExpr = (struct RefExpr*)expr;
 		break;
 	case eIntnum:
-		node->type2.intnum = intnum;
+		(node->type2).intnum = intnum;
 		break;
 	case eFloatnum:
-		node->type2.floatnum = floatnum;
+		(node->type2).floatnum = floatnum;
 		break;
 	}
 	return (struct ast*)node;
@@ -569,6 +569,7 @@ struct ast *get()
 
 void print_ast(struct ast *node)
 {
+	int test;
 	FILE* fp = fopen("./ast.out", "w");
 	if(fp == NULL)
 	{
@@ -936,7 +937,7 @@ void print_ast(struct ast *node)
 				}
 				break;
 			case EXPR:
-				if(((struct Expr*)current)-> e == eOper)
+				if(((struct Expr*)current)->e == eOper)
 				{
 					fprintf(fp, "ExprStmt ");
 					if(((struct Expr*)current)->type2.operExpr != NULL)
@@ -945,7 +946,7 @@ void print_ast(struct ast *node)
 						descendant_count++;
 					}
 				}
-				else if(((struct Expr*)current)-> e == eRef)
+				else if(((struct Expr*)current)->e == eRef)
 				{
 					fprintf(fp, "ExprStmt ");
 					if(((struct Expr*)current)->type2.refExpr != NULL)
@@ -954,7 +955,7 @@ void print_ast(struct ast *node)
 						descendant_count++;
 					}
 				}
-				else if(((struct Expr*)current)-> e == eIntnum)
+				else if(((struct Expr*)current)->e == eIntnum)
 				{
 					int intnum = ((struct Expr *)current)->type2.intnum;
 					fprintf(fp, "ExprStmt(%d) ", intnum);
@@ -1107,76 +1108,87 @@ void print_symbol_table(struct ast *node)
 		exit(0);
 	}
 
-	fprintf(fp, "Count\tType\tName\tArray\tRole\tLocation\n");
+	fprintf(fp, "Count\tType\tName\t\tArray\tRole\t\tLocation\n");
 
 	print_symbol_table_recursion(1, "", node, fp);
 
 	fclose(fp);
 }
 
+char* concat(const char *s1, const char *s2)
+{
+	char *result = malloc(strlen(s1) + strlen(s2) + 1);
+	strcpy(result, s1);
+	strcat(result, s2);
+	return result;
+}
+
+
 void print_symbol_table_recursion(int count, char *location, struct ast *node, FILE *fp)
 {
 	char *id;
 	int len;
+	char *className;
+	char *methodName;
 
 	switch(node->type)
 	{
 		case PROGRAM:
 			if(((struct Program *)node)->_class != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Program *)node)->_class, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Program *)node)->_class, fp);
 			}
 			if(((struct Program *)node)->classMethodDef != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Program *)node)->classMethodDef, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Program *)node)->classMethodDef, fp);
 			}
 			if(((struct Program *)node)->mainFunc != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Program *)node)->mainFunc, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Program *)node)->mainFunc, fp);
 			}
 			break;
 		case CLASS:
 			if(((struct Class *)node)->priMember != NULL)
 			{
 				id = strdup(((struct Class *)node)->id);
-				strcat(location, id);
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Class *)node)->priMember, fp);
+				location = concat(location, id);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Class *)node)->priMember, fp);
 			}
 			if(((struct Class *)node)->pubMember != NULL)
 			{
 				id = strdup(((struct Class *)node)->id);
-				strcat(location, id);
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Class *)node)->pubMember, fp);
+				location = concat(location, id);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Class *)node)->pubMember, fp);
 			}
 			if(((struct Class *)node)->prev != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Class *)node)->prev, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Class *)node)->prev, fp);
 			}
 			break;
 		case MEMBER:
 			if(((struct Member *)node)->methodDef != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct Member *)node)->methodDef, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct Member *)node)->methodDef, fp);
 			}
 			break;
 		case VARIABLE:
-			if(((struct VarDecl *)node)->type2->e == eInt)
+			if(((struct VarDecl *)node)->isInt)
 			{
-				id = ((struct VarDecl *)node)->ident->id;
-				len = ((struct VarDecl *)node)->ident->len;
-				fprintf(fp, "%d\tint\t%s\t%d\tvariable\t%s\n", count, id, len, location);
-			}
-			else if(((struct VarDecl *)node)->type2->e == eFloat)
-			{
-				id = ((struct VarDecl *)node)->ident->id;
-				len = ((struct VarDecl *)node)->ident->len;
-				fprintf(fp, "%d\tfloat\t%s\t%d\tvariable\t%s\n", count, id, len, location);
+				id = strdup((((struct VarDecl *)node)->ident)->id);
+				len = (((struct VarDecl *)node)->ident)->len;
+				if(strlen(id) < 8)
+					fprintf(fp, "%d\tint\t%s\t\t%d\tvariable\t%s\n", count, id, len, location);
+				else
+					fprintf(fp, "%d\tint\t%s\t%d\tvariable\t%s\n", count, id, len, location);
 			}
 			else
 			{
-				id = ((struct VarDecl *)node)->ident->id;
-				len = ((struct VarDecl *)node)->ident->len;
-				fprintf(fp, "%d\tclass\t%s\t%d\tvariable\t%s\n", count, id, len, location);
+				id = strdup((((struct VarDecl *)node)->ident)->id);
+				len = (((struct VarDecl *)node)->ident)->len;
+				if(strlen(id) < 8)
+					fprintf(fp, "%d\tfloat\t%s\t\t%d\tvariable\t%s\n", count, id, len, location);
+				else
+					fprintf(fp, "%d\tfloat\t%s\t%d\tvariable\t%s\n", count, id, len, location);
 			}
 			if(((struct VarDecl *)node)->prev != NULL)
 			{
@@ -1187,67 +1199,76 @@ void print_symbol_table_recursion(int count, char *location, struct ast *node, F
 			if(((struct MethodDef *)node)->param != NULL)
 			{
 				id = strdup(((struct MethodDef *)node)->id);
-				strcat(location, id);
-				print_symbol_table_recursion(1, location, (struct ast *)((struct MethodDef *)node)->param, fp);
+				location = concat(location, id);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct MethodDef *)node)->param, fp);
 			}
 			if(((struct MethodDef *)node)->compoundStmt != NULL)
 			{
 				id = strdup(((struct MethodDef *)node)->id);
-				strcat(location, id);
-				print_symbol_table_recursion(1, location, (struct ast *)((struct MethodDef *)node)->compoundStmt, fp);
+				location = concat(location, id);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct MethodDef *)node)->compoundStmt, fp);
 			}
 			if(((struct MethodDef *)node)->prev != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct MethodDef *)node)->prev, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct MethodDef *)node)->prev, fp);
 			}
 			break;
 		case CLASSMETHODDEF:
 			if(((struct ClassMethodDef *)node)->param != NULL)
 			{
-				char *className = strdup(((struct ClassMethodDef *)node)->className);
-				char *methodName = strdup(((struct ClassMethodDef *)node)->methodName);
-				strcat(location, className);
-				strcat(location, methodName);
-				print_symbol_table_recursion(1, location, (struct ast *)((struct ClassMethodDef *)node)->param, fp);
+				className = strdup(((struct ClassMethodDef *)node)->className);
+				methodName = strdup(((struct ClassMethodDef *)node)->methodName);
+				location = concat(location, className);
+				location = concat(location, methodName);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct ClassMethodDef *)node)->param, fp);
 			}
 			if(((struct ClassMethodDef *)node)->compoundStmt != NULL)
 			{
-				char *className = strdup(((struct ClassMethodDef *)node)->className);
-				char *methodName = strdup(((struct ClassMethodDef *)node)->methodName);
-				strcat(location, className);
-				strcat(location, methodName);
-				print_symbol_table_recursion(1, location, (struct ast *)((struct ClassMethodDef *)node)->compoundStmt, fp);
+				className = strdup(((struct ClassMethodDef *)node)->className);
+				methodName = strdup(((struct ClassMethodDef *)node)->methodName);
+				location = concat(location, className);
+				location = concat(location, methodName);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct ClassMethodDef *)node)->compoundStmt, fp);
 			}
 			if(((struct ClassMethodDef *)node)->prev != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct ClassMethodDef *)node)->compoundStmt, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct ClassMethodDef *)node)->compoundStmt, fp);
 			}
 			break;
 		case MAIN:
-			strcat(location, "main");
+			location = concat(location, "main");
 			if(((struct MainFunc *)node)->compoundStmt != NULL)
 			{
-				print_symbol_table_recursion(1, location, (struct ast *)((struct MainFunc *)node)->compoundStmt, fp);
+				print_symbol_table_recursion(count, location, (struct ast *)((struct MainFunc *)node)->compoundStmt, fp);
 			}
 			break;
 		case PARAM:
 			if(((struct Param *)node)->type2->e == eInt)
 			{
-				id = ((struct Param *)node)->ident->id;
-				len = ((struct Param *)node)->ident->len;
-				fprintf(fp, "%d\tint\t%s\t%d\tparameter\t%s\n", count, id, len, location);
+				id = strdup((((struct Param *)node)->ident)->id);
+				len = (((struct Param *)node)->ident)->len;
+				if(strlen(id) < 8)
+					fprintf(fp, "%d\tint\t%s\t\t%d\tparameter\t%s\n", count, id, len, location);
+				else
+					fprintf(fp, "%d\tint\t%s\t%d\tparameter\t%s\n", count, id, len, location);
 			}
 			else if(((struct Param *)node)->type2->e == eFloat)
 			{
-				id = ((struct Param *)node)->ident->id;
-				len = ((struct Param *)node)->ident->len;
-				fprintf(fp, "%d\tfloat\t%s\t%d\tparameter\t%s\n", count, id, len, location);
+				id = strdup((((struct Param *)node)->ident)->id);
+				len = (((struct Param *)node)->ident)->len;
+				if(strlen(id) < 8)
+					fprintf(fp, "%d\tfloat\t%s\t\t%d\tparameter\t%s\n", count, id, len, location);
+				else
+					fprintf(fp, "%d\tfloat\t%s\t%d\tparameter\t%s\n", count, id, len, location);
 			}
 			else
 			{
-				id = ((struct Param *)node)->ident->id;
-				len = ((struct Param *)node)->ident->len;
-				fprintf(fp, "%d\tclass\t%s\t%d\tparameter\t%s\n", count, id, len, location);
+				id = strdup((((struct Param *)node)->ident)->id);
+				len = (((struct Param *)node)->ident)->len;
+				if(strlen(id) < 8)
+					fprintf(fp, "%d\tclass\t%s\t\t%d\tparameter\t%s\n", count, id, len, location);
+				else
+					fprintf(fp, "%d\tclass\t%s\t%d\tparameter\t%s\n", count, id, len, location);
 			}
 			if(((struct Param *)node)->prev != NULL)
 			{
@@ -1255,7 +1276,6 @@ void print_symbol_table_recursion(int count, char *location, struct ast *node, F
 			}
 			break;		
 		case COMPOUNDSTMT:
-			fprintf(fp, "CompoundStmt ");
 			if(((struct CompoundStmt *)node)->varDecl != NULL)
 			{
 				print_symbol_table_recursion(count, location, (struct ast *)((struct CompoundStmt *)node)->varDecl, fp);
@@ -1268,32 +1288,32 @@ void print_symbol_table_recursion(int count, char *location, struct ast *node, F
 		case STMT:
 			if(((struct Stmt *)node)->e == eWhile)
 			{
-				strcat(location, "while");
+				location = concat(location, "while");
 				print_symbol_table_recursion(count, location, (struct ast *)((struct Stmt *)node)->type2.whileStmt, fp);
 			}
 			else if(((struct Stmt *)node)->e == eDo)
 			{
-				strcat(location, "do");
+				location = concat(location, "do");
 				print_symbol_table_recursion(count, location, (struct ast *)((struct Stmt *)node)->type2.doStmt, fp);
 			}
 			else if(((struct Stmt *)node)->e == eFor)
 			{
-				strcat(location, "for");
+				location = concat(location, "for");
 				print_symbol_table_recursion(count, location, (struct ast *)((struct Stmt *)node)->type2.forStmt, fp);
 			}
 			else if(((struct Stmt *)node)->e == eIf)
 			{
-				strcat(location, "while");
+				location = concat(location, "while");
 				print_symbol_table_recursion(count, location, (struct ast *)((struct Stmt *)node)->type2.ifStmt, fp);
 			}
 			else
 			{
-				strcat(location, "{}");
+				location = concat(location, "{}");
 				print_symbol_table_recursion(count, location, (struct ast *)((struct Stmt *)node)->type2.compoundStmt, fp);
 			}
 			if(((struct Stmt *)node)->prev != NULL)
 			{
-				strcat(location, "while");
+				location = concat(location, "while");
 				print_symbol_table_recursion(count, location, (struct ast *)((struct Stmt *)node)->prev, fp);
 			}
 			break;

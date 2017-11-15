@@ -1,0 +1,3 @@
+Count	Type	Name		Array	Role		Location
+1	int	variable4	0	variable	main
+1	float	array		4	variable	main

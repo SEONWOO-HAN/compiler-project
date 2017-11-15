@@ -2,5 +2,5 @@ Program
 Class(a) MainFunc 
 Member Member CompoundStmt 
 VarDecl VarDecl VarDecl Stmt 
-Ident(variable1) Ident(variable2) Ident(variable4) ExprStmt Stmt 
-RetStmt 
+Ident(variable1) Ident(variable2) Ident(variable4) VarDecl ExprStmt Stmt 
+Ident(array) RetStmt 

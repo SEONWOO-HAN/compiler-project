@@ -9,6 +9,7 @@ public:
 int main()
 {
 	int variable4;
+	float array[4];
 	i == 7;
 	return 0;
 }
